@@ -1,4 +1,4 @@
-﻿namespace DataAccess.DTO;
+﻿namespace Domain.DTO;
 
 public class User
 {

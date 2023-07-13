@@ -1,60 +1,47 @@
-﻿using AutoMapper;
-using DataAccess.Interfaces;
+﻿using DataAccess.Interfaces;
+using DataAccess.DAL;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class MeetingTypeRepository : IRepository<DTO.MeetingType>
+public class MeetingTypeRepository : IRepository<MeetingType>
 {
     private readonly ApplicationContext _context;
-    private readonly IMapper _mapper;
 
-    public MeetingTypeRepository(ApplicationContext context, IMapper mapper)
+    public MeetingTypeRepository(ApplicationContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
-    public async Task<int?> CreateAsync(DTO.MeetingType meetingTypeData)
+    public async Task<int?> CreateAsync(MeetingType meetingType)
     {
-        DAL.MeetingType meetingType = _mapper.Map<DAL.MeetingType>(meetingTypeData);
-
         await _context.AddAsync(meetingType);
         await _context.SaveChangesAsync();
 
         return meetingType.Id;
     }
 
-    public async Task<List<DTO.MeetingType>?> GetAllAsync()
+    public async Task<List<MeetingType>?> GetAllAsync()
     {
-        List<DAL.MeetingType> meetingTypes = await _context.MeetingTypes.OrderBy(type => type.Id).ToListAsync();
-        List<DTO.MeetingType> result = _mapper.Map<List<DTO.MeetingType>>(meetingTypes);
-
-        return result;
+        List<MeetingType> meetingTypes = await _context.MeetingTypes.OrderBy(type => type.Id).ToListAsync();
+        return meetingTypes;
     }
 
-    public async Task<DTO.MeetingType?> GetByIdAsync(int? id)
+    public async Task<MeetingType?> GetByIdAsync(int? id)
     {
-        DAL.MeetingType? meetingType = await _context.MeetingTypes.SingleOrDefaultAsync(type => type.Id == id);
-        DTO.MeetingType? result = _mapper.Map<DTO.MeetingType>(meetingType);
-
-        return result;
+        MeetingType? meetingType = await _context.MeetingTypes.SingleOrDefaultAsync(type => type.Id == id);
+        return meetingType;
     }
 
-    public async Task UpdateAsync(DTO.MeetingType meetingTypeData)
+    public async Task UpdateAsync(MeetingType meetingType)
     {
-        DAL.MeetingType? meetingType = await _context.MeetingTypes.FindAsync(meetingTypeData.Id);
-
-        if (meetingType != null)
-        {
-            _mapper.Map(meetingTypeData, meetingType);
-            await _context.SaveChangesAsync();
-        }
+        _context.Update(meetingType);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        DAL.MeetingType? meetingType = await _context.MeetingTypes.FindAsync(id);
+        MeetingType? meetingType = await _context.MeetingTypes.FindAsync(id);
 
         if (meetingType != null)
         {

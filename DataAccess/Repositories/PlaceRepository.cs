@@ -1,60 +1,47 @@
-﻿using AutoMapper;
+﻿using DataAccess.DAL;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class PlaceRepository : IRepository<DTO.Place>
+public class PlaceRepository : IRepository<Place>
 {
     private readonly ApplicationContext _context;
-    private readonly IMapper _mapper;
 
-    public PlaceRepository(ApplicationContext context, IMapper mapper)
+    public PlaceRepository(ApplicationContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
-    public async Task<int?> CreateAsync(DTO.Place placeData)
+    public async Task<int?> CreateAsync(Place place)
     {
-        DAL.Place place = _mapper.Map<DAL.Place>(placeData);
-
         await _context.AddAsync(place);
         await _context.SaveChangesAsync();
 
         return place.Id;
     }
 
-    public async Task<List<DTO.Place>?> GetAllAsync()
+    public async Task<List<Place>?> GetAllAsync()
     {
-        List<DAL.Place> places = await _context.Places.OrderBy(place => place.Id).ToListAsync();
-        List<DTO.Place> result = _mapper.Map<List<DTO.Place>>(places);
-
-        return result;
+        List<Place> places = await _context.Places.OrderBy(place => place.Id).ToListAsync();
+        return places;
     }
 
-    public async Task<DTO.Place?> GetByIdAsync(int? id)
+    public async Task<Place?> GetByIdAsync(int? id)
     {
-        DAL.Place? place = await _context.Places.SingleOrDefaultAsync(p => p.Id == id);
-        DTO.Place? result = _mapper.Map<DTO.Place>(place);
-
-        return result;
+        Place? place = await _context.Places.SingleOrDefaultAsync(p => p.Id == id);
+        return place;
     }
 
-    public async Task UpdateAsync(DTO.Place placeData)
+    public async Task UpdateAsync(Place place)
     {
-        DAL.Place? place = await _context.Places.FindAsync(placeData.Id);
-
-        if (place != null)
-        {
-            _mapper.Map(placeData, place);
-            await _context.SaveChangesAsync();
-        }
+        _context.Update(place);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(int id)
     {
-        DAL.Place? place = await _context.Places.FindAsync(id);
+        Place? place = await _context.Places.FindAsync(id);
 
         if (place != null)
         {

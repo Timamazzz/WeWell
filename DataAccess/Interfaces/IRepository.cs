@@ -1,10 +1,10 @@
 ﻿namespace DataAccess.Interfaces;
 
-internal interface IRepository<DTO> where DTO : class
+internal interface IRepository<DAL> where DAL : class
 {
-    Task<int?> CreateAsync(DTO dto);
-    Task<List<DTO>?> GetAllAsync();
-    Task<DTO?> GetByIdAsync(int? id);
-    Task UpdateAsync(DTO dto);
+    Task<int?> CreateAsync(DAL dal);
+    Task<List<DAL>?> GetAllAsync();
+    Task<DAL?> GetByIdAsync(int? id);
+    Task UpdateAsync(DAL dal);
     Task DeleteAsync(int id);
 }

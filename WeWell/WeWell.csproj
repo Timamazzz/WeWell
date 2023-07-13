@@ -24,8 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\Images\Avatars\" />
-    <Folder Include="Assets\Images\Places\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Upload\Images\Avatars\" />
+    <Folder Include="Upload\Images\Places\" />
   </ItemGroup>
 
 </Project>

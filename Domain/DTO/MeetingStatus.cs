@@ -1,6 +1,6 @@
-﻿namespace DataAccess.DTO;
+﻿namespace Domain.DTO;
 
-public class MeetingType
+public class MeetingStatus
 {
     public int Id { get; set; }
     public string? Name { get; set; }

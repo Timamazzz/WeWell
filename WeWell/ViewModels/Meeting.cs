@@ -1,4 +1,4 @@
-﻿namespace DataAccess.DTO;
+﻿namespace WeWell.ViewModels;
 
 public class Meeting
 {

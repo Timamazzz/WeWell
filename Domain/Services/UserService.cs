@@ -1,69 +1,50 @@
-﻿using DataAccess.Repositories;
-using DataAccess.DTO;
+﻿using AutoMapper;
+using DataAccess.Repositories;
+using Domain.DTO;
 using Domain.Interfaces;
-using Microsoft.Extensions.Hosting;
-using System.IO;
 
 namespace Domain.Services;
 
 public class UserService : IService<User>
 {
     private readonly UserRepository _repository;
+    private readonly IMapper _mapper;
 
-    public UserService(UserRepository repository)
+    public UserService(UserRepository repository, IMapper mapper)
     {
         _repository = repository;
+        _mapper = mapper;
     }
 
-    /// <summary>
-    /// Добавление нового пользователя в бд
-    /// </summary>
-    /// <param name="user"></param>
-    /// <returns>ID нового пользователя</returns>
     public async Task<int?> CreateAsync(User user)
     {
-        int? id = await _repository.CreateAsync(user);
+        DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user);
+        int? id = await _repository.CreateAsync(entity);
         return id;
     }
 
-    // <summary>
-    /// Получение всех пользоваелей
-    /// </summary>
     public async Task<List<User>?> GetAllAsync()
     {
-        List<User>? users = await _repository.GetAllAsync();
+        List<DataAccess.DAL.User>? entities = await _repository.GetAllAsync();
+        List<User>? users = _mapper.Map<List<User>>(entities);
         return users;
     }
 
-
-    /// <summary>
-    /// Получение пользователя по id
-    /// </summary>
-    /// <param name="id"></param>
     public async Task<User?> GetByIdAsync(int id)
     {
-        User? user = await _repository.GetByIdAsync(id);
+        DataAccess.DAL.User? entity = await _repository.GetByIdAsync(id);
+        User? user = _mapper.Map<User>(entity);
         return user;
     }
 
-    /// <summary>
-    /// Обновление пользователя по id
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="user"></param>
     public async Task UpdateAsync(User user)
     {
-         await _repository.UpdateAsync(user);
+        DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user);
+        await _repository.UpdateAsync(entity);
     }
 
-    /// <summary>
-    /// Удаление пользователя по id
-    /// </summary>
-    /// <param name="id"></param>
     public async Task DeleteAsync(int id)
     {
         await _repository.DeleteAsync(id);
     }
-
-
 }

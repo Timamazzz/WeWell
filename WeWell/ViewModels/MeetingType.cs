@@ -1,6 +1,6 @@
-﻿namespace DataAccess.DTO;
+﻿namespace WeWell.ViewModels;
 
-public class MeetingStatus
+public class MeetingType
 {
     public int Id { get; set; }
     public string? Name { get; set; }
