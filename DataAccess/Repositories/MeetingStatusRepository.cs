@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class MeetingStatusRepository : IRepository<Domain.DTO.MeetingStatus, DAL.MeetingStatus>
+public class MeetingStatusRepository : IRepository<DTO.MeetingStatus>
 {
     private readonly ApplicationContext _context;
     private readonly IMapper _mapper;
@@ -15,7 +15,7 @@ public class MeetingStatusRepository : IRepository<Domain.DTO.MeetingStatus, DAL
         _mapper = mapper;
     }
 
-    public async Task<int?> CreateAsync(Domain.DTO.MeetingStatus meetingStatusData)
+    public async Task<int?> CreateAsync(DTO.MeetingStatus meetingStatusData)
     {
         DAL.MeetingStatus meetingStatus = _mapper.Map<DAL.MeetingStatus>(meetingStatusData);
 
@@ -25,23 +25,23 @@ public class MeetingStatusRepository : IRepository<Domain.DTO.MeetingStatus, DAL
         return meetingStatus.Id;
     }
 
-    public async Task<List<Domain.DTO.MeetingStatus>> GetAllAsync()
+    public async Task<List<DTO.MeetingStatus>?> GetAllAsync()
     {
         List<DAL.MeetingStatus> meetingStatuses = await _context.MeetingStatuses.OrderBy(status => status.Id).ToListAsync();
-        List<Domain.DTO.MeetingStatus> result = _mapper.Map<List<Domain.DTO.MeetingStatus>>(meetingStatuses);
+        List<DTO.MeetingStatus> result = _mapper.Map<List<DTO.MeetingStatus>>(meetingStatuses);
 
         return result;
     }
 
-    public async Task<Domain.DTO.MeetingStatus?> GetByIdAsync(int? id)
+    public async Task<DTO.MeetingStatus?> GetByIdAsync(int? id)
     {
         DAL.MeetingStatus? meetingStatus = await _context.MeetingStatuses.SingleOrDefaultAsync(status => status.Id == id);
-        Domain.DTO.MeetingStatus? result = _mapper.Map<Domain.DTO.MeetingStatus>(meetingStatus);
+        DTO.MeetingStatus? result = _mapper.Map<DTO.MeetingStatus>(meetingStatus);
 
         return result;
     }
 
-    public async Task UpdateAsync(Domain.DTO.MeetingStatus meetingStatusData)
+    public async Task UpdateAsync(DTO.MeetingStatus meetingStatusData)
     {
         DAL.MeetingStatus? meetingStatus = await _context.MeetingStatuses.FindAsync(meetingStatusData.Id);
 

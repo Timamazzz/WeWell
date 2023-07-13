@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class MeetingRepository : IRepository<Domain.DTO.Meeting, DAL.Meeting>
+public class MeetingRepository : IRepository<DTO.Meeting>
 {
     private readonly ApplicationContext _context;
     private readonly IMapper _mapper;
@@ -15,7 +15,7 @@ public class MeetingRepository : IRepository<Domain.DTO.Meeting, DAL.Meeting>
         _mapper = mapper;
     }
 
-    public async Task<int?> CreateAsync(Domain.DTO.Meeting meetingData)
+    public async Task<int?> CreateAsync(DTO.Meeting meetingData)
     {
         DAL.Meeting meeting = _mapper.Map<DAL.Meeting>(meetingData);
 
@@ -25,23 +25,23 @@ public class MeetingRepository : IRepository<Domain.DTO.Meeting, DAL.Meeting>
         return meeting.Id;
     }
 
-    public async Task<List<Domain.DTO.Meeting>> GetAllAsync()
+    public async Task<List<DTO.Meeting>?> GetAllAsync()
     {
         List<DAL.Meeting> meetings = await _context.Meetings.OrderBy(meeting => meeting.Id).ToListAsync();
-        List<Domain.DTO.Meeting> result = _mapper.Map<List<Domain.DTO.Meeting>>(meetings);
+        List<DTO.Meeting> result = _mapper.Map<List<DTO.Meeting>>(meetings);
 
         return result;
     }
 
-    public async Task<Domain.DTO.Meeting?> GetByIdAsync(int? id)
+    public async Task<DTO.Meeting?> GetByIdAsync(int? id)
     {
         DAL.Meeting? meeting = await _context.Meetings.SingleOrDefaultAsync(m => m.Id == id);
-        Domain.DTO.Meeting? result = _mapper.Map<Domain.DTO.Meeting>(meeting);
+        DTO.Meeting? result = _mapper.Map<DTO.Meeting>(meeting);
 
         return result;
     }
 
-    public async Task UpdateAsync(Domain.DTO.Meeting meetingData)
+    public async Task UpdateAsync(DTO.Meeting meetingData)
     {
         DAL.Meeting? meeting = await _context.Meetings.FindAsync(meetingData.Id);
 

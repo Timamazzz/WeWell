@@ -21,8 +21,4 @@
 		<Folder Include="DAL\" />
 		<Folder Include="Interfaces\" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Domain\Domain.csproj" />
-	</ItemGroup>
 </Project>

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class PlaceRepository : IRepository<Domain.DTO.Place, DAL.Place>
+public class PlaceRepository : IRepository<DTO.Place>
 {
     private readonly ApplicationContext _context;
     private readonly IMapper _mapper;
@@ -15,7 +15,7 @@ public class PlaceRepository : IRepository<Domain.DTO.Place, DAL.Place>
         _mapper = mapper;
     }
 
-    public async Task<int?> CreateAsync(Domain.DTO.Place placeData)
+    public async Task<int?> CreateAsync(DTO.Place placeData)
     {
         DAL.Place place = _mapper.Map<DAL.Place>(placeData);
 
@@ -25,23 +25,23 @@ public class PlaceRepository : IRepository<Domain.DTO.Place, DAL.Place>
         return place.Id;
     }
 
-    public async Task<List<Domain.DTO.Place>> GetAllAsync()
+    public async Task<List<DTO.Place>?> GetAllAsync()
     {
         List<DAL.Place> places = await _context.Places.OrderBy(place => place.Id).ToListAsync();
-        List<Domain.DTO.Place> result = _mapper.Map<List<Domain.DTO.Place>>(places);
+        List<DTO.Place> result = _mapper.Map<List<DTO.Place>>(places);
 
         return result;
     }
 
-    public async Task<Domain.DTO.Place?> GetByIdAsync(int? id)
+    public async Task<DTO.Place?> GetByIdAsync(int? id)
     {
         DAL.Place? place = await _context.Places.SingleOrDefaultAsync(p => p.Id == id);
-        Domain.DTO.Place? result = _mapper.Map<Domain.DTO.Place>(place);
+        DTO.Place? result = _mapper.Map<DTO.Place>(place);
 
         return result;
     }
 
-    public async Task UpdateAsync(Domain.DTO.Place placeData)
+    public async Task UpdateAsync(DTO.Place placeData)
     {
         DAL.Place? place = await _context.Places.FindAsync(placeData.Id);
 

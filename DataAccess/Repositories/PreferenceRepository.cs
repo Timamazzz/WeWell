@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class PreferenceRepository : IRepository<Domain.DTO.Preference, DAL.Preference>
+public class PreferenceRepository : IRepository<DTO.Preference>
 {
     private readonly ApplicationContext _context;
     private readonly IMapper _mapper;
@@ -15,7 +15,7 @@ public class PreferenceRepository : IRepository<Domain.DTO.Preference, DAL.Prefe
         _mapper = mapper;
     }
 
-    public async Task<int?> CreateAsync(Domain.DTO.Preference preferenceData)
+    public async Task<int?> CreateAsync(DTO.Preference preferenceData)
     {
         DAL.Preference preference = _mapper.Map<DAL.Preference>(preferenceData);
 
@@ -25,23 +25,23 @@ public class PreferenceRepository : IRepository<Domain.DTO.Preference, DAL.Prefe
         return preference.Id;
     }
 
-    public async Task<List<Domain.DTO.Preference>> GetAllAsync()
+    public async Task<List<DTO.Preference>?> GetAllAsync()
     {
         List<DAL.Preference> preferences = await _context.Preferences.OrderBy(preference => preference.Id).ToListAsync();
-        List<Domain.DTO.Preference> result = _mapper.Map<List<Domain.DTO.Preference>>(preferences);
+        List<DTO.Preference> result = _mapper.Map<List<DTO.Preference>>(preferences);
 
         return result;
     }
 
-    public async Task<Domain.DTO.Preference?> GetByIdAsync(int? id)
+    public async Task<DTO.Preference?> GetByIdAsync(int? id)
     {
         DAL.Preference? preference = await _context.Preferences.SingleOrDefaultAsync(p => p.Id == id);
-        Domain.DTO.Preference? result = _mapper.Map<Domain.DTO.Preference>(preference);
+        DTO.Preference? result = _mapper.Map<DTO.Preference>(preference);
 
         return result;
     }
 
-    public async Task UpdateAsync(Domain.DTO.Preference preferenceData)
+    public async Task UpdateAsync(DTO.Preference preferenceData)
     {
         DAL.Preference? preference = await _context.Preferences.FindAsync(preferenceData.Id);
 

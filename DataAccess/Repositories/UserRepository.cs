@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class UserRepository : IRepository<Domain.DTO.User, DAL.User>
+public class UserRepository : IRepository<DTO.User>
 {
     private readonly ApplicationContext _context;
     private readonly IMapper _mapper;
@@ -15,7 +15,7 @@ public class UserRepository : IRepository<Domain.DTO.User, DAL.User>
         _mapper = mapper;
     }
 
-    public async Task<int?> CreateAsync(Domain.DTO.User userData)
+    public async Task<int?> CreateAsync(DTO.User userData)
     {
         DAL.User user = _mapper.Map<DAL.User>(userData);
 
@@ -25,23 +25,23 @@ public class UserRepository : IRepository<Domain.DTO.User, DAL.User>
         return user.Id;
     }
 
-    public async Task<List<Domain.DTO.User>> GetAllAsync()
+    public async Task<List<DTO.User>?> GetAllAsync()
     {
         List<DAL.User> users = await _context.Users.OrderBy(user => user.Id).ToListAsync();
-        List<Domain.DTO.User> result = _mapper.Map<List<Domain.DTO.User>>(users);
+        List<DTO.User> result = _mapper.Map<List<DTO.User>>(users);
 
         return result;
     }
 
-    public async Task<Domain.DTO.User?> GetByIdAsync(int? id)
+    public async Task<DTO.User?> GetByIdAsync(int? id)
     {
         DAL.User? user = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
-        Domain.DTO.User? result = _mapper.Map<Domain.DTO.User>(user);
+        DTO.User? result = _mapper.Map<DTO.User>(user);
 
         return result;
     }
 
-    public async Task UpdateAsync(Domain.DTO.User userData)
+    public async Task UpdateAsync(DTO.User userData)
     {
         DAL.User? user = await _context.Users.FindAsync(userData.Id);
 
