@@ -1,5 +1,5 @@
 using DataAccess;
-using DataAccess.AutoMapper;
+using Domain.AutoMapper;
 using DataAccess.Repositories;
 using Domain.Services;
 using Microsoft.EntityFrameworkCore;
