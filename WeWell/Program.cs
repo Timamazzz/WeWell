@@ -4,6 +4,7 @@ using DataAccess.Repositories;
 using Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using WeWell.AutoMapper;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,11 @@ builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(c
 builder.Services.AddAutoMapper(typeof(AppMappingDtoDalProfile));
 builder.Services.AddAutoMapper(typeof(AppMappingDtoViewProfile));
 
+builder.Services.AddScoped<PreferenceService>();
+builder.Services.AddScoped<MeetingStatusService>();
+builder.Services.AddScoped<MeetingTypeService>();
+builder.Services.AddScoped<MeetingService>();
+builder.Services.AddScoped<PlaceService>();
 builder.Services.AddScoped<UserService>();
 
 builder.Services.AddScoped<UserRepository>();
@@ -37,8 +43,10 @@ builder.Services.AddCors(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddSwaggerGen(c =>
+{
+    c.EnableAnnotations();
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

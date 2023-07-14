@@ -2,9 +2,9 @@
 
 internal interface IRepository<DAL> where DAL : class
 {
-    Task<int?> CreateAsync(DAL dal);
+    Task<int?> CreateAsync(DAL entity);
     Task<List<DAL>?> GetAllAsync();
     Task<DAL?> GetByIdAsync(int? id);
-    Task UpdateAsync(DAL dal);
+    Task UpdateAsync(DAL entity);
     Task DeleteAsync(int id);
 }
