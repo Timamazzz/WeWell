@@ -1,19 +1,23 @@
 using DataAccess;
-using Domain.AutoMapper;
 using DataAccess.Repositories;
+using Domain.AutoMapper;
 using Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using WeWell.AutoMapper;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
 
+//EF
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
-builder.Services.AddAutoMapper(typeof(AppMappingDtoDalProfile));
-builder.Services.AddAutoMapper(typeof(AppMappingDtoViewProfile));
 
+//Mapping
+builder.Services.AddAutoMapper(typeof(AppMappingDtoDalProfile), typeof(AppMappingDtoViewProfile));
+builder.Services.AddScoped<TimeSpanStringConverter>();
+
+
+//Services
 builder.Services.AddScoped<PreferenceService>();
 builder.Services.AddScoped<MeetingStatusService>();
 builder.Services.AddScoped<MeetingTypeService>();
@@ -21,6 +25,8 @@ builder.Services.AddScoped<MeetingService>();
 builder.Services.AddScoped<PlaceService>();
 builder.Services.AddScoped<UserService>();
 
+
+//Repositories
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<MeetingRepository>();
 builder.Services.AddScoped<MeetingStatusRepository>();

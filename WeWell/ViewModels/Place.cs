@@ -8,6 +8,6 @@ public class Place
     public string? ImagePath { get; set; }
     public IFormFile? Image { get; set; }
     public string? Price { get; set; }
-    public TimeSpan? StartWork { get; set; }
-    public TimeSpan? EndWork { get; set; }
+    public string? StartWork { get; set; }
+    public string? EndWork { get; set; }
 }
