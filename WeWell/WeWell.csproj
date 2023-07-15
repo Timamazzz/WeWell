@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Upload\**" />
+    <Content Remove="Upload\**" />
+    <EmbeddedResource Remove="Upload\**" />
+    <None Remove="Upload\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.9" />
@@ -25,8 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Upload\Images\Avatars\" />
-    <Folder Include="Upload\Images\Places\" />
+    <Folder Include="wwwroot\upload\Images\Places\" />
+    <Folder Include="wwwroot\upload\Images\Users\Avatars\" />
   </ItemGroup>
 
 </Project>
