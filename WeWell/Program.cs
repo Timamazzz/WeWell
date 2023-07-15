@@ -4,7 +4,6 @@ using Domain.AutoMapper;
 using Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using WeWell.AutoMapper;
-using WeWell.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +52,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();
-    c.OperationFilter<SwaggerFileUploadFilter>();
 });
 var app = builder.Build();
 

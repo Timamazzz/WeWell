@@ -3,6 +3,7 @@ using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WeWell.ViewModels;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WeWell.Controllers
 {
@@ -12,13 +13,11 @@ namespace WeWell.Controllers
     {
         private readonly PlaceService _service;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public PlacesController(PlaceService service, IMapper mapper, IWebHostEnvironment hostEnvironment)
+        public PlacesController(PlaceService service, IMapper mapper)
         {
             _service = service;
             _mapper = mapper;
-            _hostEnvironment = hostEnvironment;
         }
 
         [HttpPost]
@@ -29,11 +28,6 @@ namespace WeWell.Controllers
         {
             try
             {
-                if (place.Image != null)
-                {
-                    place.ImagePath = await SaveImage(place.Image);
-                }
-
                 var placeDTO = _mapper.Map<Domain.DTO.Place>(place);
                 var id = await _service.CreateAsync(placeDTO);
                 return Ok(id);
@@ -94,11 +88,6 @@ namespace WeWell.Controllers
         {
             try
             {
-                if (place.Image != null)
-                {
-                    place.ImagePath = await SaveImage(place.Image);
-                }
-
                 Domain.DTO.Place placeDto = _mapper.Map<Domain.DTO.Place>(place);
                 await _service.UpdateAsync(placeDto);
 
@@ -127,39 +116,11 @@ namespace WeWell.Controllers
 
                 await _service.DeleteAsync(id);
 
-                // Delete the associated image file if it exists
-                if (!string.IsNullOrEmpty(place.ImagePath))
-                {
-                    DeleteImage(place.ImagePath);
-                }
-
                 return Ok();
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
-            }
-        }
-
-        private async Task<string> SaveImage(IFormFile image)
-        {
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
-            var filePath = Path.Combine(_hostEnvironment.WebRootPath, "upload/Images/Places", fileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await image.CopyToAsync(fileStream);
-            }
-
-            return fileName;
-        }
-
-        private void DeleteImage(string imagePath)
-        {
-            var filePath = Path.Combine(_hostEnvironment.WebRootPath, "upload/Images/Places", imagePath);
-            if (System.IO.File.Exists(filePath))
-            {
-                System.IO.File.Delete(filePath);
             }
         }
     }
