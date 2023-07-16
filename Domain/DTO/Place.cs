@@ -11,5 +11,4 @@ public class Place
     public string? Price { get; set; }
     public TimeSpan? StartWork { get; set; }
     public TimeSpan? EndWork { get; set; }
-
 }

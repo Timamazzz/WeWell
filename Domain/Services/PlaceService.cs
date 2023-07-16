@@ -2,29 +2,37 @@
 using DataAccess.Repositories;
 using Domain.DTO;
 using Domain.Interfaces;
-using Microsoft.Extensions.Hosting;
 
 namespace Domain.Services;
 
 public class PlaceService : IService<Place>
 {
-
     private readonly PlaceRepository _repository;
+    private readonly PreferenceRepository _preferenceRepository;
     private readonly IMapper _mapper;
     private readonly string _pathToUpload;
 
-    public PlaceService(PlaceRepository repository, IMapper mapper)
+    public PlaceService(PlaceRepository repository, PreferenceRepository preferenceRepository, IMapper mapper)
     {
         _repository = repository;
+        _preferenceRepository = preferenceRepository;
         _mapper = mapper;
         _pathToUpload = "wwwroot/Upload/Images/Places";
     }
 
     public async Task<int?> CreateAsync(Place place)
     {
-        place.ImagePath = await SaveImage(place);
+        var existingPlace = await _repository.GetByIdAsync(place.Id);
+        if (existingPlace != null)
+        {
+            throw new Exception("Place with the same ID already exists.");
+        }
+
+        //place.ImagePath = await SaveImage(place);
+
         DataAccess.DAL.Place entity = _mapper.Map<DataAccess.DAL.Place>(place);
         int? id = await _repository.CreateAsync(entity);
+
         return id;
     }
 
@@ -69,7 +77,6 @@ public class PlaceService : IService<Place>
 
         return filePath;
     }
-
 
     private void DeleteImage(string filePath)
     {

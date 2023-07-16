@@ -26,7 +26,7 @@ public class AppMappingDtoViewProfile : Profile
         CreateMap<Domain.DTO.MeetingStatus, ViewModels.MeetingStatus>().ReverseMap();
         CreateMap<Domain.DTO.MeetingType, ViewModels.MeetingType>().ReverseMap();
         CreateMap<Domain.DTO.Place, ViewModels.Place>()
-             .ForMember(dest => dest.StartWork, opt => opt.MapFrom(src => src.StartWork != null ? src.StartWork.Value.ToString(@"hh\:mm") : null))
+            .ForMember(dest => dest.StartWork, opt => opt.MapFrom(src => src.StartWork != null ? src.StartWork.Value.ToString(@"hh\:mm") : null))
             .ForMember(dest => dest.EndWork, opt => opt.MapFrom(src => src.EndWork != null ? src.EndWork.Value.ToString(@"hh\:mm") : null))
             .ForMember(dest => dest.Image, opt => opt.Ignore())
             .ReverseMap()

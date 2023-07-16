@@ -85,6 +85,30 @@ namespace DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PlacePreference",
+                columns: table => new
+                {
+                    PlacesId = table.Column<int>(type: "integer", nullable: false),
+                    PreferencesId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PlacePreference", x => new { x.PlacesId, x.PreferencesId });
+                    table.ForeignKey(
+                        name: "FK_PlacePreference_Places_PlacesId",
+                        column: x => x.PlacesId,
+                        principalTable: "Places",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PlacePreference_Preferences_PreferencesId",
+                        column: x => x.PreferencesId,
+                        principalTable: "Preferences",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Meetings",
                 columns: table => new
                 {
@@ -179,6 +203,11 @@ namespace DataAccess.Migrations
                 column: "TypeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PlacePreference_PreferencesId",
+                table: "PlacePreference",
+                column: "PreferencesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PreferenceUser_UsersId",
                 table: "PreferenceUser",
                 column: "UsersId");
@@ -189,6 +218,9 @@ namespace DataAccess.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Meetings");
+
+            migrationBuilder.DropTable(
+                name: "PlacePreference");
 
             migrationBuilder.DropTable(
                 name: "PreferenceUser");

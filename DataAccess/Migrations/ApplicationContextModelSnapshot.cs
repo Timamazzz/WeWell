@@ -170,6 +170,21 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("PlacePreference", b =>
+                {
+                    b.Property<int>("PlacesId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PreferencesId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("PlacesId", "PreferencesId");
+
+                    b.HasIndex("PreferencesId");
+
+                    b.ToTable("PlacePreference");
+                });
+
             modelBuilder.Entity("PreferenceUser", b =>
                 {
                     b.Property<int>("PreferencesId")
@@ -216,6 +231,21 @@ namespace DataAccess.Migrations
                     b.Navigation("Status");
 
                     b.Navigation("Type");
+                });
+
+            modelBuilder.Entity("PlacePreference", b =>
+                {
+                    b.HasOne("DataAccess.DAL.Place", null)
+                        .WithMany()
+                        .HasForeignKey("PlacesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataAccess.DAL.Preference", null)
+                        .WithMany()
+                        .HasForeignKey("PreferencesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PreferenceUser", b =>

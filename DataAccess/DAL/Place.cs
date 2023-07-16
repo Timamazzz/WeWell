@@ -10,4 +10,5 @@ public class Place
     public TimeSpan? StartWork { get; set; }
     public TimeSpan? EndWork { get; set; }
     public List<Meeting> Meetings { get; set; } = new List<Meeting>();
+    public List<Preference> Preferences { get; set; } = new List<Preference>();
 }
