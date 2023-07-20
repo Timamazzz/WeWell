@@ -31,8 +31,4 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\Upload\Images\Places\" />
-  </ItemGroup>
-
 </Project>

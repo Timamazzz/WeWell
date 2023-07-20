@@ -8,16 +8,14 @@ namespace Domain.Services;
 public class PlaceService : IService<Place>
 {
     private readonly PlaceRepository _repository;
-    private readonly PreferenceRepository _preferenceRepository;
+    private readonly ImageService _imageService;
     private readonly IMapper _mapper;
-    private readonly string _pathToUpload;
 
-    public PlaceService(PlaceRepository repository, PreferenceRepository preferenceRepository, IMapper mapper)
+    public PlaceService(PlaceRepository repository, IMapper mapper, ImageService imageService)
     {
         _repository = repository;
-        _preferenceRepository = preferenceRepository;
         _mapper = mapper;
-        _pathToUpload = "wwwroot/Upload/Images/Places";
+        _imageService = imageService;
     }
 
     public async Task<int?> CreateAsync(Place place)
@@ -28,7 +26,10 @@ public class PlaceService : IService<Place>
             throw new Exception("Place with the same ID already exists.");
         }
 
-        //place.ImagePath = await SaveImage(place);
+        if (place.Image?.Length > 0)
+        {
+            place.ImagePath = await _imageService.SaveImage(place.ImageExtensions, place.Image);
+        }
 
         DataAccess.DAL.Place entity = _mapper.Map<DataAccess.DAL.Place>(place);
         int? id = await _repository.CreateAsync(entity);
@@ -52,6 +53,18 @@ public class PlaceService : IService<Place>
 
     public async Task UpdateAsync(Place place)
     {
+        if (place.Image?.Length > 0)
+        {
+            if (place.ImagePath != null)
+            {
+                place.ImagePath = await _imageService.ReplaceImage(place.ImagePath, place.Image);
+            }
+            else
+            {
+                place.ImagePath = await _imageService.SaveImage(place.ImageExtensions, place.Image);
+            }
+        }
+
         DataAccess.DAL.Place entity = _mapper.Map<DataAccess.DAL.Place>(place);
         await _repository.UpdateAsync(entity);
     }
@@ -60,29 +73,8 @@ public class PlaceService : IService<Place>
     {
         DataAccess.DAL.Place? entity = await _repository.GetByIdAsync(id);
         Place? place = _mapper.Map<Place>(entity);
-        DeleteImage(place.ImagePath);
+        ImageService.DeleteImage(place.ImagePath);
 
         await _repository.DeleteAsync(id);
-    }
-
-    private async Task<string> SaveImage(Place place)
-    {
-        var fileName = $"{Guid.NewGuid()}{place.ImageExtensions}";
-        var filePath = Path.Combine(_pathToUpload, fileName);
-
-        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        {
-            await fileStream.WriteAsync(place.Image);
-        }
-
-        return filePath;
-    }
-
-    private void DeleteImage(string filePath)
-    {
-        if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
-        {
-            File.Delete(filePath);
-        }
     }
 }

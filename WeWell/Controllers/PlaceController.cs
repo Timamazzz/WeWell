@@ -3,7 +3,6 @@ using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WeWell.ViewModels;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace WeWell.Controllers
 {
