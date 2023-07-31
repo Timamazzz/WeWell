@@ -79,12 +79,16 @@ public class PlaceService : IService<Place>
         if (place.PreferencesId != null && place.PreferencesId.Any())
         {
             var preferences = await _repositoryPreference.GetPreferencesByIdsAsync(place.PreferencesId);
-
             entity.Preferences = preferences;
+        }
+        else
+        {
+            entity.Preferences = null;
         }
 
         await _repository.UpdateAsync(entity ?? new DataAccess.DAL.Place());
     }
+
 
     public async Task DeleteAsync(int id)
     {

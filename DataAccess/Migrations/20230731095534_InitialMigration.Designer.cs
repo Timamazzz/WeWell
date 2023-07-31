@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20230716143543_InitialMigration")]
+    [Migration("20230731095534_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -167,6 +167,9 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
+
+                    b.Property<bool?>("isAllPreferences")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

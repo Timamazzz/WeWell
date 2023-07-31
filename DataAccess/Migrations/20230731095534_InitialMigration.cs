@@ -77,7 +77,8 @@ namespace DataAccess.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    AvatarPath = table.Column<string>(type: "text", nullable: true)
+                    AvatarPath = table.Column<string>(type: "text", nullable: true),
+                    isAllPreferences = table.Column<bool>(type: "boolean", nullable: true)
                 },
                 constraints: table =>
                 {

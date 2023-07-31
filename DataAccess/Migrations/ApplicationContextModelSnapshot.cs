@@ -165,6 +165,9 @@ namespace DataAccess.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
+                    b.Property<bool?>("isAllPreferences")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
