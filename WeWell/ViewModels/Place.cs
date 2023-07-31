@@ -10,4 +10,5 @@ public class Place
     public string? Price { get; set; }
     public string? StartWork { get; set; }
     public string? EndWork { get; set; }
+    public List<int>? PreferencesId { get; set; }
 }

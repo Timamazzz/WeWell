@@ -23,9 +23,10 @@ public class PlaceRepository : IRepository<Place>
 
     public async Task<List<Place>?> GetAllAsync()
     {
-        List<Place> places = await _context.Places.OrderBy(place => place.Id).ToListAsync();
+        List<Place> places = await _context.Places.Include(p => p.Preferences).ToListAsync();
         return places;
     }
+
 
     public async Task<Place?> GetByIdAsync(int? id)
     {

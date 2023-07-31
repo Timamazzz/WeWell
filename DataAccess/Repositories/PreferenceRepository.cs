@@ -28,6 +28,15 @@ public class PreferenceRepository : IRepository<Preference>
         return preferences;
     }
 
+    public async Task<List<Preference>?> GetPreferencesByIdsAsync(List<int> preferenceIds)
+    {
+        List<Preference>? preferences = await _context.Preferences
+            .Where(p => preferenceIds.Contains(p.Id))
+            .ToListAsync();
+
+        return preferences;
+    }
+
     public async Task<Preference?> GetByIdAsync(int? id)
     {
         Preference? preference = await _context.Preferences.SingleOrDefaultAsync(p => p.Id == id);

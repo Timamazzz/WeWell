@@ -8,12 +8,14 @@ namespace Domain.Services;
 public class PlaceService : IService<Place>
 {
     private readonly PlaceRepository _repository;
+    private readonly PreferenceRepository _repositoryPreference;
     private readonly ImageService _imageService;
     private readonly IMapper _mapper;
 
-    public PlaceService(PlaceRepository repository, IMapper mapper, ImageService imageService)
+    public PlaceService(PlaceRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, ImageService imageService)
     {
         _repository = repository;
+        _repositoryPreference = repositoryPreference;
         _mapper = mapper;
         _imageService = imageService;
     }
@@ -32,6 +34,13 @@ public class PlaceService : IService<Place>
         }
 
         DataAccess.DAL.Place entity = _mapper.Map<DataAccess.DAL.Place>(place);
+
+        if (place.PreferencesId != null && place.PreferencesId.Any())
+        {
+            var preferences = await _repositoryPreference.GetPreferencesByIdsAsync(place.PreferencesId);
+            entity.Preferences = preferences;
+        }
+
         int? id = await _repository.CreateAsync(entity);
 
         return id;
@@ -65,8 +74,16 @@ public class PlaceService : IService<Place>
             }
         }
 
-        DataAccess.DAL.Place entity = _mapper.Map<DataAccess.DAL.Place>(place);
-        await _repository.UpdateAsync(entity);
+        DataAccess.DAL.Place entity = _mapper.Map<DataAccess.DAL.Place>(place) ?? new DataAccess.DAL.Place();
+
+        if (place.PreferencesId != null && place.PreferencesId.Any())
+        {
+            var preferences = await _repositoryPreference.GetPreferencesByIdsAsync(place.PreferencesId);
+
+            entity.Preferences = preferences;
+        }
+
+        await _repository.UpdateAsync(entity ?? new DataAccess.DAL.Place());
     }
 
     public async Task DeleteAsync(int id)
