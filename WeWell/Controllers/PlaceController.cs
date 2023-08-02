@@ -4,123 +4,122 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WeWell.ViewModels;
 
-namespace WeWell.Controllers
+namespace WeWell.Controllers;
+
+[ApiController]
+[Route("places")]
+public class PlacesController : ControllerBase
 {
-    [ApiController]
-    [Route("places")]
-    public class PlacesController : ControllerBase
+    private readonly PlaceService _service;
+    private readonly IMapper _mapper;
+
+    public PlacesController(PlaceService service, IMapper mapper)
     {
-        private readonly PlaceService _service;
-        private readonly IMapper _mapper;
+        _service = service;
+        _mapper = mapper;
+    }
 
-        public PlacesController(PlaceService service, IMapper mapper)
+    [HttpPost]
+    [ProducesResponseType(typeof(int?), 200)]
+    [ProducesResponseType(typeof(string), 500)]
+    [SwaggerOperation("Create a new place")]
+    public async Task<ActionResult<int?>> CreatePlace([FromForm] Place place)
+    {
+        try
         {
-            _service = service;
-            _mapper = mapper;
+            var placeDTO = _mapper.Map<Domain.DTO.Place>(place);
+            var id = await _service.CreateAsync(placeDTO);
+            return Ok(id);
         }
-
-        [HttpPost]
-        [ProducesResponseType(typeof(int?), 200)]
-        [ProducesResponseType(typeof(string), 500)]
-        [SwaggerOperation("Create a new place")]
-        public async Task<ActionResult<int?>> CreatePlace([FromForm] Place place)
+        catch (Exception ex)
         {
-            try
-            {
-                var placeDTO = _mapper.Map<Domain.DTO.Place>(place);
-                var id = await _service.CreateAsync(placeDTO);
-                return Ok(id);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return StatusCode(500, ex.Message);
         }
+    }
 
-        [HttpGet]
-        [ProducesResponseType(typeof(List<Place>), 200)]
-        [ProducesResponseType(typeof(string), 500)]
-        [SwaggerOperation("Get all places")]
-        public async Task<ActionResult<List<Place>>> GetAllPlaces()
+    [HttpGet]
+    [ProducesResponseType(typeof(List<Place>), 200)]
+    [ProducesResponseType(typeof(string), 500)]
+    [SwaggerOperation("Get all places")]
+    public async Task<ActionResult<List<Place>>> GetAllPlaces()
+    {
+        try
         {
-            try
-            {
-                var placesDTO = await _service.GetAllAsync();
-                var places = _mapper.Map<List<Place>>(placesDTO);
-                return Ok(places);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            var placesDTO = await _service.GetAllAsync();
+            var places = _mapper.Map<List<Place>>(placesDTO);
+            return Ok(places);
         }
-
-        [HttpGet("{id}")]
-        [ProducesResponseType(typeof(Place), 200)]
-        [ProducesResponseType(typeof(string), 500)]
-        [SwaggerOperation("Get a place by ID")]
-        public async Task<ActionResult<Place>> GetPlace(int id)
+        catch (Exception ex)
         {
-            try
-            {
-                var placeDTO = await _service.GetByIdAsync(id);
-
-                if (placeDTO == null)
-                {
-                    return NotFound();
-                }
-
-                var place = _mapper.Map<Place>(placeDTO);
-                return Ok(place);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return StatusCode(500, ex.Message);
         }
+    }
 
-        [HttpPut]
-        [ProducesResponseType(typeof(void), 200)]
-        [ProducesResponseType(typeof(string), 500)]
-        [SwaggerOperation("Update a place")]
-        public async Task<ActionResult> UpdatePlace([FromForm] Place place)
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(Place), 200)]
+    [ProducesResponseType(typeof(string), 500)]
+    [SwaggerOperation("Get a place by ID")]
+    public async Task<ActionResult<Place>> GetPlace(int id)
+    {
+        try
         {
-            try
-            {
-                Domain.DTO.Place placeDto = _mapper.Map<Domain.DTO.Place>(place);
-                await _service.UpdateAsync(placeDto);
+            var placeDTO = await _service.GetByIdAsync(id);
 
-                return Ok();
-            }
-            catch (Exception ex)
+            if (placeDTO == null)
             {
-                return StatusCode(500, ex.Message);
+                return NotFound();
             }
+
+            var place = _mapper.Map<Place>(placeDTO);
+            return Ok(place);
         }
-
-        [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(void), 200)]
-        [ProducesResponseType(typeof(string), 500)]
-        [SwaggerOperation("Delete a place by ID")]
-        public async Task<ActionResult> DeletePlace(int id)
+        catch (Exception ex)
         {
-            try
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpPut]
+    [ProducesResponseType(typeof(void), 200)]
+    [ProducesResponseType(typeof(string), 500)]
+    [SwaggerOperation("Update a place")]
+    public async Task<ActionResult> UpdatePlace([FromForm] Place place)
+    {
+        try
+        {
+            Domain.DTO.Place placeDto = _mapper.Map<Domain.DTO.Place>(place);
+            await _service.UpdateAsync(placeDto);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(void), 200)]
+    [ProducesResponseType(typeof(string), 500)]
+    [SwaggerOperation("Delete a place by ID")]
+    public async Task<ActionResult> DeletePlace(int id)
+    {
+        try
+        {
+            var place = await _service.GetByIdAsync(id);
+
+            if (place == null)
             {
-                var place = await _service.GetByIdAsync(id);
-
-                if (place == null)
-                {
-                    return NotFound();
-                }
-
-                await _service.DeleteAsync(id);
-
-                return Ok();
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+
+            await _service.DeleteAsync(id);
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
         }
     }
 }
