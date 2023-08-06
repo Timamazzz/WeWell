@@ -20,7 +20,11 @@ public class AppMappingDtoViewProfile : Profile
 {
     public AppMappingDtoViewProfile()
     {
-        CreateMap<Domain.DTO.User, ViewModels.User>().ReverseMap();
+        CreateMap<Domain.DTO.User, ViewModels.User>()
+            .ForMember(dest => dest.Avatar, opt => opt.Ignore())
+            .ReverseMap()
+            .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => ConvertImageToByteArray(src.Avatar)))
+            .ForMember(dest => dest.AvatarExtensions, opt => opt.MapFrom(src => src.Avatar != null ? Path.GetExtension(src.Avatar.FileName) : ""));
         CreateMap<Domain.DTO.Preference, ViewModels.Preference>().ReverseMap();
         CreateMap<Domain.DTO.Meeting, ViewModels.Meeting>().ReverseMap();
         CreateMap<Domain.DTO.MeetingStatus, ViewModels.MeetingStatus>().ReverseMap();

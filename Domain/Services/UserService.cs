@@ -8,18 +8,42 @@ namespace Domain.Services;
 public class UserService : IService<User>
 {
     private readonly UserRepository _repository;
+    private readonly PreferenceRepository _repositoryPreference;
+    private readonly ImageService _imageService;
     private readonly IMapper _mapper;
 
-    public UserService(UserRepository repository, IMapper mapper)
+    public UserService(UserRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, ImageService imageService)
     {
         _repository = repository;
+        _repositoryPreference = repositoryPreference;
         _mapper = mapper;
+        _imageService = imageService;
+        _imageService.Connection = "user";
     }
 
     public async Task<int?> CreateAsync(User user)
     {
+        var existingUser = await _repository.GetByIdAsync(user.Id);
+        if (existingUser != null)
+        {
+            throw new Exception("User with the same ID already exists.");
+        }
+
+        if (user.Avatar?.Length > 0)
+        {
+            user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar);
+        }
+
         DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user);
+
+        if (user.PreferencesId != null && user.PreferencesId.Any())
+        {
+            var preferences = await _repositoryPreference.GetPreferencesByIdsAsync(user.PreferencesId);
+            entity.Preferences = preferences;
+        }
+
         int? id = await _repository.CreateAsync(entity);
+
         return id;
     }
 
@@ -39,12 +63,39 @@ public class UserService : IService<User>
 
     public async Task UpdateAsync(User user)
     {
-        DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user);
-        await _repository.UpdateAsync(entity);
+        if (user.Avatar?.Length > 0)
+        {
+            if (user.AvatarPath != null)
+            {
+                user.AvatarPath = await _imageService.ReplaceImage(user.AvatarPath, user.Avatar);
+            }
+            else
+            {
+                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar);
+            }
+        }
+
+        DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user) ?? new DataAccess.DAL.User();
+
+        if (user.PreferencesId != null && user.PreferencesId.Any())
+        {
+            var preferences = await _repositoryPreference.GetPreferencesByIdsAsync(user.PreferencesId);
+            entity.Preferences = preferences;
+        }
+        else
+        {
+            entity.Preferences = null;
+        }
+
+        await _repository.UpdateAsync(entity ?? new DataAccess.DAL.User());
     }
 
     public async Task DeleteAsync(int id)
     {
+        DataAccess.DAL.User? entity = await _repository.GetByIdAsync(id);
+        User? user = _mapper.Map<User>(entity);
+        ImageService.DeleteImage(user.AvatarPath);
+
         await _repository.DeleteAsync(id);
     }
 }

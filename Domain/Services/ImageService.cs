@@ -3,10 +3,11 @@
 public class ImageService
 {
     private readonly string _pathToUpload;
+    public string Connection { get; set; } = "";
 
     public ImageService()
     {
-        _pathToUpload = "wwwroot/Uploads/Images/Places";
+        _pathToUpload = Connection == "user" ? "wwwroot/Uploads/Images/Users/Avatars" : "wwwroot/Uploads/Images/Places";
     }
 
     public async Task<string> SaveImage(string? extensions, byte[] image)
