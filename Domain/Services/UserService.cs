@@ -2,6 +2,7 @@
 using DataAccess.Repositories;
 using Domain.DTO;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Domain.Services;
 
@@ -12,15 +13,17 @@ public class UserService : IService<User>
     private readonly ImageService _imageService;
     private readonly SmsService _smsService;
     private readonly IMapper _mapper;
-    private readonly string _pathToUpload = "wwwroot/Uploads/Images/Users/Avatars";
+    private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly string _pathToUpload = "\\Uploads\\Images\\Users\\Avatars";
 
-    public UserService(UserRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, ImageService imageService, SmsService smsService)
+    public UserService(UserRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, ImageService imageService, SmsService smsService, IWebHostEnvironment webHostEnvironment)
     {
         _repository = repository;
         _repositoryPreference = repositoryPreference;
         _mapper = mapper;
         _imageService = imageService;
         _smsService = smsService;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     public async Task<int?> CreateAsync(User user)
@@ -33,7 +36,7 @@ public class UserService : IService<User>
 
         if (user.Avatar?.Length > 0)
         {
-            user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, _pathToUpload);
+            user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, _webHostEnvironment.WebRootPath + _pathToUpload);
         }
 
         DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user);
@@ -69,11 +72,11 @@ public class UserService : IService<User>
         {
             if (user.AvatarPath != null)
             {
-                user.AvatarPath = await _imageService.ReplaceImage(user.AvatarPath, user.Avatar, _pathToUpload);
+                user.AvatarPath = await _imageService.ReplaceImage(user.AvatarPath, user.Avatar, _webHostEnvironment.WebRootPath + _pathToUpload);
             }
             else
             {
-                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, _pathToUpload);
+                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, _webHostEnvironment.WebRootPath + _pathToUpload);
             }
         }
 
