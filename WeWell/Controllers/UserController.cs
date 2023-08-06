@@ -122,5 +122,47 @@ namespace WeWell.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+        [HttpGet("phone/{phoneNumber}")]
+        [ProducesResponseType(typeof(User), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        [SwaggerOperation("Get a user by phoneNumber")]
+        public async Task<ActionResult<User>> GetUserByPhoneNumber(string phoneNumber)
+        {
+            try
+            {
+                var userDTO = await _userService.GetByPhoneNumberAsync(phoneNumber);
+
+                if (userDTO == null)
+                {
+                    return NotFound();
+                }
+
+                var user = _mapper.Map<User>(userDTO);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("phone/{phoneNumber}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        [SwaggerOperation("Send SMS to phone number")]
+        public ActionResult<string> SendSms(string phoneNumber)
+        {
+            try
+            {
+                string code = _userService.SendSms(phoneNumber);
+
+                return Ok(code);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

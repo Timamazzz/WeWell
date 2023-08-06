@@ -2,15 +2,11 @@
 
 public class ImageService
 {
-    private readonly string _pathToUpload;
-    public string Connection { get; set; } = "";
-
     public ImageService()
     {
-        _pathToUpload = Connection == "user" ? "wwwroot/Uploads/Images/Users/Avatars" : "wwwroot/Uploads/Images/Places";
     }
 
-    public async Task<string> SaveImage(string? extensions, byte[] image)
+    public async Task<string> SaveImage(string? extensions, byte[] image, string _pathToUpload)
     {
         if (extensions == null)
         {
@@ -36,7 +32,7 @@ public class ImageService
         }
     }
 
-    public async Task<string> ReplaceImage(string imagePath, byte[] image)
+    public async Task<string> ReplaceImage(string imagePath, byte[] image, string _pathToUpload)
     {
         DeleteImage(imagePath);
 
@@ -46,7 +42,7 @@ public class ImageService
             throw new ArgumentNullException(nameof(extensions), "Extensions cannot be null.");
         }
 
-        var newImagePath = await SaveImage(extensions, image);
+        var newImagePath = await SaveImage(extensions, image, _pathToUpload);
 
         return newImagePath;
     }

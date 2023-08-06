@@ -10,15 +10,17 @@ public class UserService : IService<User>
     private readonly UserRepository _repository;
     private readonly PreferenceRepository _repositoryPreference;
     private readonly ImageService _imageService;
+    private readonly SmsService _smsService;
     private readonly IMapper _mapper;
+    private readonly string _pathToUpload = "wwwroot/Uploads/Images/Users/Avatars";
 
-    public UserService(UserRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, ImageService imageService)
+    public UserService(UserRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, ImageService imageService, SmsService smsService)
     {
         _repository = repository;
         _repositoryPreference = repositoryPreference;
         _mapper = mapper;
         _imageService = imageService;
-        _imageService.Connection = "user";
+        _smsService = smsService;
     }
 
     public async Task<int?> CreateAsync(User user)
@@ -31,7 +33,7 @@ public class UserService : IService<User>
 
         if (user.Avatar?.Length > 0)
         {
-            user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar);
+            user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, _pathToUpload);
         }
 
         DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user);
@@ -67,11 +69,11 @@ public class UserService : IService<User>
         {
             if (user.AvatarPath != null)
             {
-                user.AvatarPath = await _imageService.ReplaceImage(user.AvatarPath, user.Avatar);
+                user.AvatarPath = await _imageService.ReplaceImage(user.AvatarPath, user.Avatar, _pathToUpload);
             }
             else
             {
-                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar);
+                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, _pathToUpload);
             }
         }
 
@@ -97,5 +99,18 @@ public class UserService : IService<User>
         ImageService.DeleteImage(user.AvatarPath);
 
         await _repository.DeleteAsync(id);
+    }
+
+    public async Task<User> GetByPhoneNumberAsync(string phoneNumber)
+    {
+        var userDTO = await _repository.GetByPhoneNumberAsync(phoneNumber);
+        return _mapper.Map<User>(userDTO);
+    }
+
+    public string SendSms(string phoneNumber)
+    {
+        string code = _smsService.SendSms(phoneNumber);
+
+        return code;
     }
 }

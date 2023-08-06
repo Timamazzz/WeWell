@@ -25,6 +25,8 @@ builder.Services.AddScoped<MeetingService>();
 builder.Services.AddScoped<PlaceService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ImageService>();
+builder.Services.AddScoped<Random>();
+builder.Services.AddScoped<SmsService>();
 
 
 //Repositories

@@ -11,6 +11,7 @@ public class PlaceService : IService<Place>
     private readonly PreferenceRepository _repositoryPreference;
     private readonly ImageService _imageService;
     private readonly IMapper _mapper;
+    private readonly string _pathToUpload = "wwwroot/Uploads/Images/Places";
 
     public PlaceService(PlaceRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, ImageService imageService)
     {
@@ -30,7 +31,7 @@ public class PlaceService : IService<Place>
 
         if (place.Image?.Length > 0)
         {
-            place.ImagePath = await _imageService.SaveImage(place.ImageExtensions, place.Image);
+            place.ImagePath = await _imageService.SaveImage(place.ImageExtensions, place.Image, _pathToUpload);
         }
 
         DataAccess.DAL.Place entity = _mapper.Map<DataAccess.DAL.Place>(place);
@@ -66,11 +67,11 @@ public class PlaceService : IService<Place>
         {
             if (place.ImagePath != null)
             {
-                place.ImagePath = await _imageService.ReplaceImage(place.ImagePath, place.Image);
+                place.ImagePath = await _imageService.ReplaceImage(place.ImagePath, place.Image, _pathToUpload);
             }
             else
             {
-                place.ImagePath = await _imageService.SaveImage(place.ImageExtensions, place.Image);
+                place.ImagePath = await _imageService.SaveImage(place.ImageExtensions, place.Image, _pathToUpload);
             }
         }
 

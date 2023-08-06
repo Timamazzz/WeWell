@@ -23,7 +23,7 @@ public class UserRepository : IRepository<User>
 
     public async Task<List<User>?> GetAllAsync()
     {
-        List<User> users = await _context.Users.OrderBy(user => user.Id).ToListAsync();
+        List<User> users = await _context.Users.Include(user => user.Preferences).ToListAsync();
         return users;
     }
 
@@ -48,5 +48,10 @@ public class UserRepository : IRepository<User>
             _context.Remove(user);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<User?> GetByPhoneNumberAsync(string phoneNumber)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
     }
 }
