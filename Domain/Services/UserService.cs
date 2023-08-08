@@ -14,7 +14,7 @@ public class UserService : IService<User>
     private readonly SmsService _smsService;
     private readonly IMapper _mapper;
     private readonly IWebHostEnvironment _webHostEnvironment;
-    private readonly string _pathToUpload = "\\Uploads\\Images\\Users\\Avatars";
+    private readonly string _pathToUpload = "/Uploads/Images/Users/Avatars";
 
     public UserService(UserRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, ImageService imageService, SmsService smsService, IWebHostEnvironment webHostEnvironment)
     {
