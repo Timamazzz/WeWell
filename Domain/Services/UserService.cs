@@ -36,7 +36,7 @@ public class UserService : IService<User>
 
         if (user.Avatar?.Length > 0)
         {
-            user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, _webHostEnvironment.WebRootPath + _pathToUpload);
+            user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, Path.Combine(_webHostEnvironment.WebRootPath, _pathToUpload));
         }
 
         DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user);
@@ -72,11 +72,11 @@ public class UserService : IService<User>
         {
             if (user.AvatarPath != null)
             {
-                user.AvatarPath = await _imageService.ReplaceImage(user.AvatarPath, user.Avatar, _webHostEnvironment.WebRootPath + _pathToUpload);
+                user.AvatarPath = await _imageService.ReplaceImage(user.AvatarPath, user.Avatar, Path.Combine(_webHostEnvironment.WebRootPath, _pathToUpload));
             }
             else
             {
-                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, _webHostEnvironment.WebRootPath + _pathToUpload);
+                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, Path.Combine(_webHostEnvironment.WebRootPath, _pathToUpload));
             }
         }
 

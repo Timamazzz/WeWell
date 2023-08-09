@@ -3,12 +3,12 @@
 public class Meeting
 {
     public int Id { get; set; }
-    public User? Creator { get; set; }
-    public User? Guest { get; set; }
+    public int? CreatorId { get; set; }
+    public int? GuestId { get; set; }
     public DateTime Date { get; set; }
     public int? Price { get; set; }
     public int? Duration { get; set; }
-    public MeetingType? Type { get; set; }
-    public MeetingStatus? Status { get; set; }
-    public Place? Place { get; set; }
+    public int? TypeId { get; set; }
+    public int? StatusId { get; set; }
+    public int? PlaceId { get; set; }
 }
