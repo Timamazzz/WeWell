@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WeWell.ViewModels;
@@ -12,11 +13,13 @@ namespace WeWell.Controllers
     {
         private readonly UserService _userService;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserController(UserService userService, IMapper mapper)
+        public UserController(UserService userService, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _userService = userService;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost]
@@ -27,6 +30,7 @@ namespace WeWell.Controllers
         {
             try
             {
+                _userService._webRootPath = _webHostEnvironment.WebRootPath;
                 var userDTO = _mapper.Map<Domain.DTO.User>(user);
                 var userId = await _userService.CreateAsync(userDTO);
                 return Ok(userId);
@@ -87,6 +91,7 @@ namespace WeWell.Controllers
         {
             try
             {
+                _userService._webRootPath = _webHostEnvironment.WebRootPath;
                 Domain.DTO.User userDTO = _mapper.Map<Domain.DTO.User>(user);
                 await _userService.UpdateAsync(userDTO);
 
@@ -106,6 +111,7 @@ namespace WeWell.Controllers
         {
             try
             {
+                _userService._webRootPath = _webHostEnvironment.WebRootPath;
                 var userDTO = await _userService.GetByIdAsync(id);
 
                 if (userDTO == null)

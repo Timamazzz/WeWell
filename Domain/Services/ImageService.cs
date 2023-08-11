@@ -2,30 +2,38 @@
 
 public class ImageService
 {
+    public string? _webRootPath;
     public ImageService()
     {
     }
 
-    public async Task<string> SaveImage(string? extensions, byte[] image, string _pathToUpload)
+    public async Task<string> SaveImage(string? extensions, byte[] image, string pathToUpload)
     {
         if (extensions == null)
         {
             throw new ArgumentNullException(nameof(extensions), "Extensions cannot be null.");
         }
 
-        var fileName = $"{Guid.NewGuid()}{extensions}";
-        var filePath = Path.Combine(_pathToUpload, fileName);
+        string fullPath = Path.Combine(_webRootPath, pathToUpload);
 
-        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        if (!Directory.Exists(fullPath))
+            Directory.CreateDirectory(fullPath);
+
+        var fileName = $"{Guid.NewGuid()}{extensions}";
+        fullPath = Path.Combine(fullPath, fileName);
+
+        using (var fileStream = new FileStream(fullPath, FileMode.Create))
         {
             await fileStream.WriteAsync(image);
         }
 
-        return filePath;
+        return Path.Combine(pathToUpload, fileName);
     }
 
-    public static void DeleteImage(string? filePath)
+    public async Task DeleteImage(string? filePath)
     {
+        string fullPath = Path.Combine(_webRootPath, filePath);
+
         if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
         {
             File.Delete(filePath);
@@ -34,7 +42,7 @@ public class ImageService
 
     public async Task<string> ReplaceImage(string imagePath, byte[] image, string _pathToUpload)
     {
-        DeleteImage(imagePath);
+        await DeleteImage(imagePath);
 
         var extensions = Path.GetExtension(imagePath);
         if (extensions == null)
@@ -42,8 +50,7 @@ public class ImageService
             throw new ArgumentNullException(nameof(extensions), "Extensions cannot be null.");
         }
 
-        var newImagePath = await SaveImage(extensions, image, _pathToUpload);
-
-        return newImagePath;
+        await SaveImage(extensions, image, _pathToUpload);
+        return "";
     }
 }

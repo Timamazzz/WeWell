@@ -12,11 +12,13 @@ public class PlacesController : ControllerBase
 {
     private readonly PlaceService _service;
     private readonly IMapper _mapper;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public PlacesController(PlaceService service, IMapper mapper)
+    public PlacesController(PlaceService service, IMapper mapper, IWebHostEnvironment webHostEnvironment)
     {
         _service = service;
         _mapper = mapper;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     [HttpPost]
@@ -27,6 +29,7 @@ public class PlacesController : ControllerBase
     {
         try
         {
+            _service._webRootPath = _webHostEnvironment.WebRootPath;
             var placeDTO = _mapper.Map<Domain.DTO.Place>(place);
             var id = await _service.CreateAsync(placeDTO);
             return Ok(id);
@@ -87,6 +90,7 @@ public class PlacesController : ControllerBase
     {
         try
         {
+            _service._webRootPath = _webHostEnvironment.WebRootPath;
             Domain.DTO.Place placeDto = _mapper.Map<Domain.DTO.Place>(place);
             await _service.UpdateAsync(placeDto);
 
@@ -106,6 +110,7 @@ public class PlacesController : ControllerBase
     {
         try
         {
+            _service._webRootPath = _webHostEnvironment.WebRootPath
             var place = await _service.GetByIdAsync(id);
 
             if (place == null)
