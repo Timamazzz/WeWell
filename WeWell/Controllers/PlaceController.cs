@@ -110,7 +110,7 @@ public class PlacesController : ControllerBase
     {
         try
         {
-            _service._webRootPath = _webHostEnvironment.WebRootPath
+            _service._webRootPath = _webHostEnvironment.WebRootPath;
             var place = await _service.GetByIdAsync(id);
 
             if (place == null)
