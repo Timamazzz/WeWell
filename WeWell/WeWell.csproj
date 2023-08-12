@@ -32,8 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Uploads\Images\Places\" />
-    <Folder Include="wwwroot\Uploads\Images\Users\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

@@ -34,9 +34,9 @@ public class ImageService
     {
         string fullPath = Path.Combine(_webRootPath, filePath);
 
-        if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+        if (!string.IsNullOrEmpty(fullPath) && File.Exists(fullPath))
         {
-            File.Delete(filePath);
+            File.Delete(fullPath);
         }
     }
 
@@ -50,7 +50,7 @@ public class ImageService
             throw new ArgumentNullException(nameof(extensions), "Extensions cannot be null.");
         }
 
-        await SaveImage(extensions, image, _pathToUpload);
-        return "";
+        
+        return await SaveImage(extensions, image, _pathToUpload);
     }
 }

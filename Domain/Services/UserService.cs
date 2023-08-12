@@ -72,8 +72,25 @@ public class UserService : IService<User>
 
     public async Task UpdateAsync(User user)
     {
-        DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user) ?? new DataAccess.DAL.User();
+        DataAccess.DAL.User? entity = await _repository.GetByIdAsync(user.Id);
+        
+        
+        if (user.Avatar?.Length > 0)
+        {
+            string pathToUpload = Path.Combine("Uploads", "Images", "Users", user.Id.ToString());
+            _imageService._webRootPath = _webRootPath;
 
+            if (entity.AvatarPath != null)
+            {
+                user.AvatarPath = await _imageService.ReplaceImage(entity.AvatarPath, user.Avatar, pathToUpload);
+            }
+            else
+            {
+                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, pathToUpload);
+            }
+        }
+
+        _mapper.Map(user, entity);
         if (user.PreferencesId != null && user.PreferencesId.Any())
         {
             var preferences = await _repositoryPreference.GetPreferencesByIdsAsync(user.PreferencesId);
@@ -84,22 +101,7 @@ public class UserService : IService<User>
             entity.Preferences = null;
         }
 
-        if (user.Avatar?.Length > 0)
-        {
-            string pathToUpload = Path.Combine("Uploads", "Images", "Users", user.Id.ToString());
-            _imageService._webRootPath = _webRootPath;
-
-            if (entity.AvatarPath != null)
-            {
-                await _imageService.ReplaceImage(entity.AvatarPath, user.Avatar, pathToUpload);
-            }
-            else
-            {
-                await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, pathToUpload);
-            }
-        }
-
-        await _repository.UpdateAsync(entity ?? new DataAccess.DAL.User());
+        await _repository.UpdateAsync(entity);
     }
 
     public async Task DeleteAsync(int id)

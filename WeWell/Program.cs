@@ -28,7 +28,6 @@ builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<Random>();
 builder.Services.AddScoped<SmsService>();
 
-
 //Repositories
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<MeetingRepository>();
@@ -62,6 +61,8 @@ var app = builder.Build();
 app.UseDeveloperExceptionPage();
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseStaticFiles();
 
 app.UseCors("AllowLocalhost");
 
