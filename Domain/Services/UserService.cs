@@ -72,8 +72,11 @@ public class UserService : IService<User>
 
     public async Task UpdateAsync(User user)
     {
-        DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user);
-        
+        DataAccess.DAL.User? entity = await _repository.GetByIdAsync(user.Id);
+        Console.WriteLine("User id:", user.Id.ToString());
+        Console.WriteLine("User name:", user.Name);
+        Console.WriteLine("User isAll:", user.isAllPreferences.ToString());
+        Console.WriteLine("User path_avatar:", user.AvatarPath);
         if (user.Avatar?.Length > 0)
         {
             string pathToUpload = Path.Combine("Uploads", "Images", "Users", user.Id.ToString());
@@ -81,14 +84,15 @@ public class UserService : IService<User>
 
             if (entity.AvatarPath != null)
             {
-                entity.AvatarPath = await _imageService.ReplaceImage(entity.AvatarPath, user.Avatar, pathToUpload);
+                user.AvatarPath = await _imageService.ReplaceImage(entity.AvatarPath, user.Avatar, pathToUpload);
             }
             else
             {
-                entity.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, pathToUpload);
+                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, pathToUpload);
             }
         }
 
+        entity = _mapper.Map<User, DataAccess.DAL.User>(user, entity);
         if (user.PreferencesId != null && user.PreferencesId.Any())
         {
             var preferences = await _repositoryPreference.GetPreferencesByIdsAsync(user.PreferencesId);
