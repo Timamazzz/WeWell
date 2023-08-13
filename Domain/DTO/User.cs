@@ -10,4 +10,5 @@ public class User
     public string? AvatarExtensions { get; set; }
     public bool? isAllPreferences { get; set; }
     public List<int>? PreferencesId { get; set; }
+    public List<Preference>? Preferences { get; set; }
 }
