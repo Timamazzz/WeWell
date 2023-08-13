@@ -32,11 +32,14 @@ public class ImageService
 
     public async Task DeleteImage(string? filePath)
     {
-        string fullPath = Path.Combine(_webRootPath, filePath);
-
-        if (!string.IsNullOrEmpty(fullPath) && File.Exists(fullPath))
+        if (filePath != null)
         {
-            File.Delete(fullPath);
+            string fullPath = Path.Combine(_webRootPath, filePath);
+
+            if (!string.IsNullOrEmpty(fullPath) && File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
         }
     }
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WeWell.ViewModels;
+using WeWell.ViewModels.Users;
 
 namespace WeWell.Controllers
 {
@@ -26,7 +27,7 @@ namespace WeWell.Controllers
         [ProducesResponseType(typeof(int?), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Create a new user")]
-        public async Task<ActionResult<int?>> CreateUser([FromForm] User user)
+        public async Task<ActionResult<int?>> CreateUser([FromForm] UserCreate user)
         {
             try
             {
@@ -42,15 +43,15 @@ namespace WeWell.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<User>), 200)]
+        [ProducesResponseType(typeof(List<UserGet>), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Get all users")]
-        public async Task<ActionResult<List<User>>> GetAllUsers()
+        public async Task<ActionResult<List<UserGet>>> GetAllUsers()
         {
             try
             {
                 var usersDTO = await _userService.GetAllAsync();
-                var users = _mapper.Map<List<User>>(usersDTO);
+                var users = _mapper.Map<List<UserGet>>(usersDTO);
                 return Ok(users);
             }
             catch (Exception ex)
@@ -60,10 +61,10 @@ namespace WeWell.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(User), 200)]
+        [ProducesResponseType(typeof(UserGet), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Get a user by ID")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserGet>> GetUser(int id)
         {
             try
             {
@@ -74,7 +75,7 @@ namespace WeWell.Controllers
                     return NotFound();
                 }
 
-                var user = _mapper.Map<User>(userDTO);
+                var user = _mapper.Map<UserGet>(userDTO);
                 return Ok(user);
             }
             catch (Exception ex)
@@ -87,7 +88,7 @@ namespace WeWell.Controllers
         [ProducesResponseType(typeof(void), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Update a user")]
-        public async Task<ActionResult> UpdateUser([FromForm] User user)
+        public async Task<ActionResult> UpdateUser([FromForm] UserUpdate user)
         {
             try
             {
@@ -130,10 +131,10 @@ namespace WeWell.Controllers
         }
 
         [HttpGet("phone/{phoneNumber}")]
-        [ProducesResponseType(typeof(User), 200)]
+        [ProducesResponseType(typeof(UserGet), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Get a user by phoneNumber")]
-        public async Task<ActionResult<User>> GetUserByPhoneNumber(string phoneNumber)
+        public async Task<ActionResult<UserGet>> GetUserByPhoneNumber(string phoneNumber)
         {
             try
             {
@@ -144,7 +145,7 @@ namespace WeWell.Controllers
                     return NotFound();
                 }
 
-                var user = _mapper.Map<User>(userDTO);
+                var user = _mapper.Map<UserGet>(userDTO);
                 return Ok(user);
             }
             catch (Exception ex)
