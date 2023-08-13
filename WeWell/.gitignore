@@ -69,7 +69,7 @@ ScaffoldingReadMe.txt
 StyleCopReport.xml
 
 # Migrations
-DataAccessMigrations
+DataAccess/Migrations/*
 
 # Files built by Visual Studio
 *_i.c
