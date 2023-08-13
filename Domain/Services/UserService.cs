@@ -72,8 +72,7 @@ public class UserService : IService<User>
 
     public async Task UpdateAsync(User user)
     {
-        DataAccess.DAL.User? entity = await _repository.GetByIdAsync(user.Id);
-        
+        DataAccess.DAL.User entity = _mapper.Map<DataAccess.DAL.User>(user);
         
         if (user.Avatar?.Length > 0)
         {
@@ -82,15 +81,14 @@ public class UserService : IService<User>
 
             if (entity.AvatarPath != null)
             {
-                user.AvatarPath = await _imageService.ReplaceImage(entity.AvatarPath, user.Avatar, pathToUpload);
+                entity.AvatarPath = await _imageService.ReplaceImage(entity.AvatarPath, user.Avatar, pathToUpload);
             }
             else
             {
-                user.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, pathToUpload);
+                entity.AvatarPath = await _imageService.SaveImage(user.AvatarExtensions, user.Avatar, pathToUpload);
             }
         }
 
-        _mapper.Map(user, entity);
         if (user.PreferencesId != null && user.PreferencesId.Any())
         {
             var preferences = await _repositoryPreference.GetPreferencesByIdsAsync(user.PreferencesId);

@@ -11,4 +11,5 @@ public class Place
     public string? StartWork { get; set; }
     public string? EndWork { get; set; }
     public List<int>? PreferencesId { get; set; }
+    public List<int>? MeetingTypesId { get; set; }
 }

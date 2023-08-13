@@ -7,7 +7,7 @@ using WeWell.ViewModels;
 namespace WeWell.Controllers;
 
 [ApiController]
-[Route("meetingstatus")]
+[Route("meetingstatuses")]
 public class MeetingStatusController : ControllerBase
 {
     private readonly MeetingStatusService _service;

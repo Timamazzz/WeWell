@@ -7,7 +7,7 @@ using WeWell.ViewModels;
 namespace WeWell.Controllers;
 
 [ApiController]
-[Route("meetingtype")]
+[Route("meetingtypes")]
 public class MeetingTypeController : ControllerBase
 {
     private readonly MeetingTypeService _service;

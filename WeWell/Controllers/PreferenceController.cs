@@ -7,7 +7,7 @@ using WeWell.ViewModels;
 namespace WeWell.Controllers;
 
 [ApiController]
-[Route("preference")]
+[Route("preferences")]
 public class PreferenceController : ControllerBase
 {
     private readonly PreferenceService _service;
