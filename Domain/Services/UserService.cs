@@ -73,10 +73,7 @@ public class UserService : IService<User>
     public async Task UpdateAsync(User user)
     {
         DataAccess.DAL.User? entity = await _repository.GetByIdAsync(user.Id);
-        Console.WriteLine("User id:", user.Id.ToString());
-        Console.WriteLine("User name:", user.Name);
-        Console.WriteLine("User isAll:", user.isAllPreferences.ToString());
-        Console.WriteLine("User path_avatar:", user.AvatarPath);
+
         if (user.Avatar?.Length > 0)
         {
             string pathToUpload = Path.Combine("Uploads", "Images", "Users", user.Id.ToString());
