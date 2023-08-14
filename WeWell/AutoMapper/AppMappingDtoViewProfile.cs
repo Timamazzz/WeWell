@@ -43,6 +43,9 @@ public class AppMappingDtoViewProfile : Profile
             .ForMember(dest => dest.EndWork, opt => opt.ConvertUsing<TimeSpanStringConverter, string>())
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertImageToByteArray(src.Image)))
             .ForMember(dest => dest.ImageExtensions, opt => opt.MapFrom(src => src.Image != null ? Path.GetExtension(src.Image.FileName) : ""));
+        //Meetings
+        CreateMap<Domain.DTO.Meeting, ViewModels.Meetings.MeetingCreate>().ReverseMap();
+
     }
 
     private static byte[]? ConvertImageToByteArray(IFormFile? image)
