@@ -86,7 +86,7 @@ public class PlaceService : IService<Place>
             string pathToUpload = Path.Combine("Uploads", "Images", "Places", place.Id.ToString());
             _imageService._webRootPath = _webRootPath;
 
-            if (entity.ImagePath != null)
+            if (await IsImageExist(place.Id))
             {
                 place.ImagePath = await _imageService.ReplaceImage(entity.ImagePath, place.Image, pathToUpload);
             }
@@ -108,5 +108,11 @@ public class PlaceService : IService<Place>
         await _imageService.DeleteImage(place.ImagePath);
 
         await _repository.DeleteAsync(id);
+    }
+    
+    public async Task<bool> IsImageExist(int id)
+    {
+        DataAccess.DAL.Place? entity = await _repository.GetByIdAsync(id);
+        return !(entity.ImagePath == null || entity.ImagePath == "");
     }
 }

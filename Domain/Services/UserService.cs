@@ -79,7 +79,7 @@ public class UserService : IService<User>
             string pathToUpload = Path.Combine("Uploads", "Images", "Users", user.Id.ToString());
             _imageService._webRootPath = _webRootPath;
 
-            if (entity.AvatarPath != null)
+            if (await IsAvatarExist(user.Id))
             {
                 user.AvatarPath = await _imageService.ReplaceImage(entity.AvatarPath, user.Avatar, pathToUpload);
             }
@@ -125,5 +125,11 @@ public class UserService : IService<User>
         string code = _smsService.SendSms(phoneNumber);
 
         return code;
+    }
+
+    public async Task<bool> IsAvatarExist(int id)
+    {
+        DataAccess.DAL.User? entity = await _repository.GetByIdAsync(id);
+        return entity.AvatarPath == null || entity.AvatarPath == "";
     }
 }
