@@ -70,8 +70,8 @@ public class MeetingStatusController : ControllerBase
     {
         try
         {
-            var statusesDTO = await _service.GetAllAsync();
-            var statuses = _mapper.Map<List<MeetingStatus>>(statusesDTO);
+            var statusesDto = await _service.GetAllAsync();
+            var statuses = _mapper.Map<List<MeetingStatus>>(statusesDto);
             return Ok(statuses);
         }
         catch (Exception ex)
