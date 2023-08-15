@@ -1,4 +1,4 @@
-﻿namespace WeWell.Models.MeetingTypes;
+﻿namespace WeWell.Models;
 
 public class MeetingType
 {

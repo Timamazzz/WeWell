@@ -45,6 +45,7 @@ public class AppMappingDtoToPresentationModelsProfile : Profile
         //Meetings
         CreateMap<Domain.DTO.Meeting, ViewModels.Meetings.MeetingCreate>().ReverseMap();*/
         CreateMap<Domain.DataTransferObjects.MeetingStatus, Models.MeetingStatus>().ReverseMap();
+        CreateMap<Domain.DataTransferObjects.MeetingType, Models.MeetingType>().ReverseMap();
     }
 
     private static byte[]? ConvertImageToByteArray(IFormFile? image)

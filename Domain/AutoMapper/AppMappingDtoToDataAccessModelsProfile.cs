@@ -18,6 +18,7 @@ namespace Domain.AutoMapper
                 .ReverseMap();
             CreateMap<DataAccess.DAL.Preference, DTO.Preference>().ReverseMap();*/
             CreateMap<DataAccess.Models.MeetingStatus, DataTransferObjects.MeetingStatus>().ReverseMap();
+            CreateMap<DataAccess.Models.MeetingType, DataTransferObjects.MeetingType>().ReverseMap();
         }
     }
 }
