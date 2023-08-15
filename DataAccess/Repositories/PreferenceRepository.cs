@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using DataAccess.Models;
+﻿using DataAccess.Models;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class PreferenceRepository/* : IRepository<Preference>*/
+public class PreferenceRepository : IRepository<Preference>
 {
     private readonly ApplicationContext _context;
 
@@ -14,7 +13,7 @@ public class PreferenceRepository/* : IRepository<Preference>*/
         _context = context;
     }
 
-    /*public async Task<int?> CreateAsync(Preference preference)
+    public async Task<int?> CreateAsync(Preference preference)
     {
         await _context.AddAsync(preference);
         await _context.SaveChangesAsync();
@@ -27,16 +26,7 @@ public class PreferenceRepository/* : IRepository<Preference>*/
         List<Preference> preferences = await _context.Preferences.OrderBy(p => p.Id).ToListAsync();
         return preferences;
     }
-
-    public async Task<List<Preference>?> GetPreferencesByIdsAsync(List<int> preferenceIds)
-    {
-        List<Preference>? preferences = await _context.Preferences
-            .Where(p => preferenceIds.Contains(p.Id))
-            .ToListAsync();
-
-        return preferences;
-    }
-
+    
     public async Task<Preference?> GetByIdAsync(int? id)
     {
         Preference? preference = await _context.Preferences.SingleOrDefaultAsync(p => p.Id == id);
@@ -58,6 +48,6 @@ public class PreferenceRepository/* : IRepository<Preference>*/
             _context.Remove(preference);
             await _context.SaveChangesAsync();
         }
-    }*/
+    }
 }
 
