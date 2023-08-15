@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using DataAccess.Repositories;
-using Domain.DTO;
 using Domain.Interfaces;
 
 namespace Domain.Services;
 
-public class PlaceService : IService<Place>
+public class PlaceService /*: IService<Place>*/
 {
     private readonly PlaceRepository _repository;
     private readonly PreferenceRepository _repositoryPreference;
@@ -21,7 +20,7 @@ public class PlaceService : IService<Place>
         _imageService = imageService;
     }
 
-    public async Task<int?> CreateAsync(Place place)
+    /*public async Task<int?> CreateAsync(Place place)
     {
         var existingPlace = await _repository.GetByIdAsync(place.Id);
         if (existingPlace != null)
@@ -114,5 +113,5 @@ public class PlaceService : IService<Place>
     {
         DataAccess.DAL.Place? entity = await _repository.GetByIdAsync(id);
         return !(entity.ImagePath == null || entity.ImagePath == "");
-    }
+    }*/
 }

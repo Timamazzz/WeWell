@@ -1,6 +1,6 @@
-﻿namespace Domain.DTO;
+﻿namespace WeWell.Models.MeetingTypes;
 
-public class MeetingStatus
+public class MeetingType
 {
     public int Id { get; set; }
     public string? Name { get; set; }

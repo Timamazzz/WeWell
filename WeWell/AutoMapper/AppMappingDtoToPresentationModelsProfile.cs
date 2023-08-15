@@ -16,15 +16,15 @@ public class TimeSpanStringConverter : IValueConverter<string, TimeSpan?>
 }
 
 
-public class AppMappingDtoViewProfile : Profile
+public class AppMappingDtoToPresentationModelsProfile : Profile
 {
-    public AppMappingDtoViewProfile()
+    public AppMappingDtoToPresentationModelsProfile()
     {
-        //Users
+        /*//Users
         CreateMap<Domain.DTO.User, ViewModels.Users.UserCreate>()
-            .ReverseMap()
             .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => ConvertImageToByteArray(src.Avatar)))
-            .ForMember(dest => dest.AvatarExtensions, opt => opt.MapFrom(src => src.Avatar != null ? Path.GetExtension(src.Avatar.FileName) : ""));
+            .ForMember(dest => dest.AvatarExtensions, opt => opt.MapFrom(src => src.Avatar != null ? Path.GetExtension(src.Avatar.FileName) : ""))
+            .ForMember(dest => dest.PreferencesId, opt => opt.MapFrom(src => src.Preferences.Select(p => p.Id).ToList())); // Map Preferences to PreferencesId
         CreateMap<Domain.DTO.User, ViewModels.Users.UserUpdate>()
             .ReverseMap()
             .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => ConvertImageToByteArray(src.Avatar)))
@@ -32,7 +32,6 @@ public class AppMappingDtoViewProfile : Profile
         CreateMap<Domain.DTO.User, ViewModels.Users.UserGet>().ReverseMap();
         CreateMap<Domain.DTO.Preference, ViewModels.Preference>().ReverseMap();
         CreateMap<Domain.DTO.Meeting, ViewModels.Meeting>().ReverseMap();
-        CreateMap<Domain.DTO.MeetingStatus, ViewModels.MeetingStatus>().ReverseMap();
         CreateMap<Domain.DTO.MeetingType, ViewModels.MeetingType>().ReverseMap();
         CreateMap<Domain.DTO.Place, ViewModels.Place>()
             .ForMember(dest => dest.StartWork, opt => opt.MapFrom(src => src.StartWork != null ? src.StartWork.Value.ToString(@"hh\:mm") : null))
@@ -44,8 +43,8 @@ public class AppMappingDtoViewProfile : Profile
             .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertImageToByteArray(src.Image)))
             .ForMember(dest => dest.ImageExtensions, opt => opt.MapFrom(src => src.Image != null ? Path.GetExtension(src.Image.FileName) : ""));
         //Meetings
-        CreateMap<Domain.DTO.Meeting, ViewModels.Meetings.MeetingCreate>().ReverseMap();
-
+        CreateMap<Domain.DTO.Meeting, ViewModels.Meetings.MeetingCreate>().ReverseMap();*/
+        CreateMap<Domain.DataTransferObjects.MeetingStatus, Models.MeetingStatus>().ReverseMap();
     }
 
     private static byte[]? ConvertImageToByteArray(IFormFile? image)

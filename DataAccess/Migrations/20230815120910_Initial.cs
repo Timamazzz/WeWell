@@ -18,7 +18,7 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,15 +31,13 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    Address = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: false),
                     ImagePath = table.Column<string>(type: "text", nullable: true),
-                    MinPrice = table.Column<int>(type: "integer", nullable: true),
-                    MaxPrice = table.Column<int>(type: "integer", nullable: true),
-                    StartWork = table.Column<TimeSpan>(type: "interval", nullable: true),
-                    EndWork = table.Column<TimeSpan>(type: "interval", nullable: true),
-                    MinDurationHours = table.Column<int>(type: "integer", nullable: true),
-                    MaxDurationHours = table.Column<int>(type: "integer", nullable: true)
+                    MinPrice = table.Column<int>(type: "integer", nullable: false),
+                    MaxPrice = table.Column<int>(type: "integer", nullable: false),
+                    MinDurationHours = table.Column<int>(type: "integer", nullable: false),
+                    MaxDurationHours = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +50,7 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true)
+                    Name = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,10 +63,10 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
                     AvatarPath = table.Column<string>(type: "text", nullable: true),
-                    isAllPreferences = table.Column<bool>(type: "boolean", nullable: true)
+                    IsAllPreferences = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -81,7 +79,7 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     PlaceId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -148,16 +146,16 @@ namespace DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CreatorId = table.Column<int>(type: "integer", nullable: true),
-                    GuestId = table.Column<int>(type: "integer", nullable: true),
+                    CreatorId = table.Column<int>(type: "integer", nullable: false),
+                    GuestId = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    MinPrice = table.Column<int>(type: "integer", nullable: true),
-                    MaxPrice = table.Column<int>(type: "integer", nullable: true),
-                    MinDurationHours = table.Column<int>(type: "integer", nullable: true),
-                    MaxDurationHours = table.Column<int>(type: "integer", nullable: true),
-                    TypeId = table.Column<int>(type: "integer", nullable: true),
-                    StatusId = table.Column<int>(type: "integer", nullable: true),
-                    PlaceId = table.Column<int>(type: "integer", nullable: true)
+                    MinPrice = table.Column<int>(type: "integer", nullable: false),
+                    MaxPrice = table.Column<int>(type: "integer", nullable: false),
+                    MinDurationHours = table.Column<int>(type: "integer", nullable: false),
+                    MaxDurationHours = table.Column<int>(type: "integer", nullable: false),
+                    TypeId = table.Column<int>(type: "integer", nullable: false),
+                    StatusId = table.Column<int>(type: "integer", nullable: false),
+                    PlaceId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -166,27 +164,32 @@ namespace DataAccess.Migrations
                         name: "FK_Meetings_MeetingStatuses_StatusId",
                         column: x => x.StatusId,
                         principalTable: "MeetingStatuses",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Meetings_MeetingTypes_TypeId",
                         column: x => x.TypeId,
                         principalTable: "MeetingTypes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Meetings_Places_PlaceId",
                         column: x => x.PlaceId,
                         principalTable: "Places",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Meetings_Users_CreatorId",
                         column: x => x.CreatorId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Meetings_Users_GuestId",
                         column: x => x.GuestId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

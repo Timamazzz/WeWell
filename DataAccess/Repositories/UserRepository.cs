@@ -1,10 +1,10 @@
-﻿using DataAccess.DAL;
+﻿using DataAccess.Models;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class UserRepository : IRepository<User>
+public class UserRepository /*: IRepository<User>*/
 {
     private readonly ApplicationContext _context;
 
@@ -13,7 +13,7 @@ public class UserRepository : IRepository<User>
         _context = context;
     }
 
-    public async Task<int?> CreateAsync(User user)
+    /*public async Task<int?> CreateAsync(User user)
     {
         await _context.AddAsync(user);
         await _context.SaveChangesAsync();
@@ -53,5 +53,5 @@ public class UserRepository : IRepository<User>
     public async Task<User?> GetByPhoneNumberAsync(string phoneNumber)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
-    }
+    }*/
 }

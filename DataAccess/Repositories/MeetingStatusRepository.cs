@@ -1,5 +1,5 @@
 ﻿using DataAccess.Interfaces;
-using DataAccess.DAL;
+using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
@@ -41,12 +41,12 @@ public class MeetingStatusRepository : IRepository<MeetingStatus>
 
     public async Task DeleteAsync(int id)
     {
-        MeetingStatus? meetingStatus = await _context.MeetingStatuses.FindAsync(id);
-
+        var meetingStatus = await _context.MeetingStatuses.FindAsync(id);
         if (meetingStatus != null)
         {
-            _context.Remove(meetingStatus);
+            _context.MeetingStatuses.Remove(meetingStatus);
             await _context.SaveChangesAsync();
         }
     }
+
 }

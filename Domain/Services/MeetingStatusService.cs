@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using DataAccess.Repositories;
-using Domain.DTO;
+using Domain.DataTransferObjects;
 using Domain.Interfaces;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Domain.Services
 {
@@ -20,28 +18,28 @@ namespace Domain.Services
 
         public async Task<int?> CreateAsync(MeetingStatus status)
         {
-            DataAccess.DAL.MeetingStatus entity = _mapper.Map<DataAccess.DAL.MeetingStatus>(status);
+            DataAccess.Models.MeetingStatus entity = _mapper.Map<DataAccess.Models.MeetingStatus>(status);
             int? id = await _repository.CreateAsync(entity);
             return id;
         }
 
         public async Task<List<MeetingStatus>?> GetAllAsync()
         {
-            List<DataAccess.DAL.MeetingStatus>? entities = await _repository.GetAllAsync();
+            List<DataAccess.Models.MeetingStatus>? entities = await _repository.GetAllAsync();
             List<MeetingStatus>? statuses = _mapper.Map<List<MeetingStatus>>(entities);
             return statuses;
         }
 
         public async Task<MeetingStatus?> GetByIdAsync(int id)
         {
-            DataAccess.DAL.MeetingStatus? entity = await _repository.GetByIdAsync(id);
+            DataAccess.Models.MeetingStatus? entity = await _repository.GetByIdAsync(id);
             MeetingStatus? status = _mapper.Map<MeetingStatus>(entity);
             return status;
         }
 
         public async Task UpdateAsync(MeetingStatus status)
         {
-            DataAccess.DAL.MeetingStatus entity = _mapper.Map<DataAccess.DAL.MeetingStatus>(status);
+            DataAccess.Models.MeetingStatus entity = _mapper.Map<DataAccess.Models.MeetingStatus>(status);
             await _repository.UpdateAsync(entity);
         }
 

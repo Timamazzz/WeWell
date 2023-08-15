@@ -1,6 +1,6 @@
-﻿namespace Domain.DTO;
+﻿namespace Domain.DataTransferObjects;
 
-public class Preference
+public class MeetingType
 {
     public int Id { get; set; }
     public string? Name { get; set; }

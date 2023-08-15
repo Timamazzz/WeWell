@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using DataAccess.Repositories;
-using Domain.DTO;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Domain.Services;
 
-public class UserService : IService<User>
+public class UserService /*: IService<User>*/
 {
     private readonly UserRepository _repository;
     private readonly PreferenceRepository _repositoryPreference;
@@ -24,7 +23,7 @@ public class UserService : IService<User>
         _smsService = smsService;
     }
 
-    public async Task<int?> CreateAsync(User user)
+    /*public async Task<int?> CreateAsync(User user)
     {
         var existingUser = await _repository.GetByIdAsync(user.Id);
         if (existingUser != null)
@@ -131,5 +130,5 @@ public class UserService : IService<User>
     {
         DataAccess.DAL.User? entity = await _repository.GetByIdAsync(id);
         return entity.AvatarPath == null || entity.AvatarPath == "";
-    }
+    }*/
 }

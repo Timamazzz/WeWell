@@ -5,6 +5,7 @@ using Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using WeWell.AutoMapper;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,7 @@ string? connection = builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(connection));
 
 //Mapping
-builder.Services.AddAutoMapper(typeof(AppMappingDtoDalProfile), typeof(AppMappingDtoViewProfile));
+builder.Services.AddAutoMapper(typeof(AppMappingDtoToDataAccessModelsProfile), typeof(AppMappingDtoToPresentationModelsProfile));
 builder.Services.AddScoped<TimeSpanStringConverter>();
 
 
@@ -55,13 +56,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.EnableAnnotations();
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WeWell API", Version = "v1" });
 });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseDeveloperExceptionPage();
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "WeWell API v1");
+});
 
 app.UseStaticFiles(new StaticFileOptions
 {

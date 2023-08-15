@@ -1,6 +1,6 @@
-﻿namespace WeWell.ViewModels;
+﻿namespace Domain.DataTransferObjects;
 
-public class MeetingType
+public class Preference
 {
     public int Id { get; set; }
     public string? Name { get; set; }

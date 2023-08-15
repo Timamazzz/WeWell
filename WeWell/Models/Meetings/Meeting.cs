@@ -1,4 +1,4 @@
-﻿namespace WeWell.ViewModels.Meetings;
+﻿namespace WeWell.Models.Meetings;
 
 public class MeetingCreate
 {

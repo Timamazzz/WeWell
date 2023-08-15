@@ -3,8 +3,6 @@ using Domain.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using WeWell.ViewModels;
-using WeWell.ViewModels.Users;
 
 namespace WeWell.Controllers
 {
@@ -23,7 +21,7 @@ namespace WeWell.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [ProducesResponseType(typeof(int?), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Create a new user")]
@@ -170,6 +168,6 @@ namespace WeWell.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-        }
+        }*/
     }
 }

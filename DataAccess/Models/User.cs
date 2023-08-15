@@ -1,14 +1,17 @@
-﻿namespace Domain.DTO;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DataAccess.Models;
 
 public class User
 {
+    [Required]
     public int Id { get; set; }
+    [Required]
     public string? Name { get; set; }
+    [Required]
     public string? PhoneNumber { get; set; }
     public string? AvatarPath { get; set; }
-    public byte[]? Avatar { get; set; }
-    public string? AvatarExtensions { get; set; }
-    public bool? isAllPreferences { get; set; }
-    public List<int>? PreferencesId { get; set; }
+    [Required]
+    public bool? IsAllPreferences { get; set; }
     public List<Preference>? Preferences { get; set; }
 }

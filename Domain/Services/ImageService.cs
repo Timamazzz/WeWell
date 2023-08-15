@@ -7,7 +7,7 @@ public class ImageService
     {
     }
 
-    public async Task<string> SaveImage(string? extensions, byte[] image, string pathToUpload)
+    private async Task<string> SaveImage(string? extensions, byte[] image, string pathToUpload)
     {
         if (extensions == null)
         {
@@ -22,7 +22,7 @@ public class ImageService
         var fileName = $"{Guid.NewGuid()}{extensions}";
         fullPath = Path.Combine(fullPath, fileName);
 
-        using (var fileStream = new FileStream(fullPath, FileMode.Create))
+        await using (var fileStream = new FileStream(fullPath, FileMode.Create))
         {
             await fileStream.WriteAsync(image);
         }
@@ -30,7 +30,7 @@ public class ImageService
         return Path.Combine(pathToUpload, fileName);
     }
 
-    public async Task DeleteImage(string? filePath)
+    private void DeleteImage(string? filePath)
     {
         if (filePath != null)
         {
@@ -43,9 +43,9 @@ public class ImageService
         }
     }
 
-    public async Task<string> ReplaceImage(string imagePath, byte[] image, string _pathToUpload)
+    private async Task<string> ReplaceImage(string imagePath, byte[] image, string pathToUpload)
     {
-        await DeleteImage(imagePath);
+        DeleteImage(imagePath);
 
         var extensions = Path.GetExtension(imagePath);
         if (extensions == null)
@@ -54,6 +54,6 @@ public class ImageService
         }
 
         
-        return await SaveImage(extensions, image, _pathToUpload);
+        return await SaveImage(extensions, image, pathToUpload);
     }
 }

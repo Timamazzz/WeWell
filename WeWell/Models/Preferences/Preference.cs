@@ -1,4 +1,4 @@
-﻿namespace WeWell.ViewModels
+﻿namespace WeWell.Models.Preferences
 {
     public class Preference
     {

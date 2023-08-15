@@ -22,7 +22,7 @@ namespace DataAccess.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("DataAccess.DAL.Meeting", b =>
+            modelBuilder.Entity("DataAccess.Models.Meeting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,34 +30,38 @@ namespace DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CreatorId")
+                    b.Property<int>("CreatorId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("GuestId")
+                    b.Property<int>("GuestId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("MaxDurationHours")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int?>("MaxPrice")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int?>("MinDurationHours")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int?>("MinPrice")
+                        .IsRequired()
                         .HasColumnType("integer");
 
-                    b.Property<int?>("PlaceId")
+                    b.Property<int>("PlaceId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("StatusId")
+                    b.Property<int>("StatusId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("TypeId")
+                    b.Property<int>("TypeId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -75,7 +79,7 @@ namespace DataAccess.Migrations
                     b.ToTable("Meetings");
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.MeetingStatus", b =>
+            modelBuilder.Entity("DataAccess.Models.MeetingStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -84,6 +88,7 @@ namespace DataAccess.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -91,7 +96,7 @@ namespace DataAccess.Migrations
                     b.ToTable("MeetingStatuses");
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.MeetingType", b =>
+            modelBuilder.Entity("DataAccess.Models.MeetingType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,6 +105,7 @@ namespace DataAccess.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int?>("PlaceId")
@@ -112,7 +118,7 @@ namespace DataAccess.Migrations
                     b.ToTable("MeetingTypes");
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.Place", b =>
+            modelBuilder.Entity("DataAccess.Models.Place", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -121,38 +127,38 @@ namespace DataAccess.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<TimeSpan?>("EndWork")
-                        .HasColumnType("interval");
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("text");
 
                     b.Property<int?>("MaxDurationHours")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int?>("MaxPrice")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int?>("MinDurationHours")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int?>("MinPrice")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<TimeSpan?>("StartWork")
-                        .HasColumnType("interval");
 
                     b.HasKey("Id");
 
                     b.ToTable("Places");
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.Preference", b =>
+            modelBuilder.Entity("DataAccess.Models.Preference", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -161,6 +167,7 @@ namespace DataAccess.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -168,7 +175,7 @@ namespace DataAccess.Migrations
                     b.ToTable("Preferences");
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.User", b =>
+            modelBuilder.Entity("DataAccess.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -179,14 +186,17 @@ namespace DataAccess.Migrations
                     b.Property<string>("AvatarPath")
                         .HasColumnType("text");
 
+                    b.Property<bool?>("IsAllPreferences")
+                        .IsRequired()
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool?>("isAllPreferences")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -223,27 +233,37 @@ namespace DataAccess.Migrations
                     b.ToTable("PreferenceUser");
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.Meeting", b =>
+            modelBuilder.Entity("DataAccess.Models.Meeting", b =>
                 {
-                    b.HasOne("DataAccess.DAL.User", "Creator")
+                    b.HasOne("DataAccess.Models.User", "Creator")
                         .WithMany()
-                        .HasForeignKey("CreatorId");
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DataAccess.DAL.User", "Guest")
+                    b.HasOne("DataAccess.Models.User", "Guest")
                         .WithMany()
-                        .HasForeignKey("GuestId");
+                        .HasForeignKey("GuestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DataAccess.DAL.Place", "Place")
+                    b.HasOne("DataAccess.Models.Place", "Place")
                         .WithMany("Meetings")
-                        .HasForeignKey("PlaceId");
+                        .HasForeignKey("PlaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DataAccess.DAL.MeetingStatus", "Status")
+                    b.HasOne("DataAccess.Models.MeetingStatus", "Status")
                         .WithMany("Meetings")
-                        .HasForeignKey("StatusId");
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DataAccess.DAL.MeetingType", "Type")
+                    b.HasOne("DataAccess.Models.MeetingType", "Type")
                         .WithMany("Meetings")
-                        .HasForeignKey("TypeId");
+                        .HasForeignKey("TypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Creator");
 
@@ -256,22 +276,22 @@ namespace DataAccess.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.MeetingType", b =>
+            modelBuilder.Entity("DataAccess.Models.MeetingType", b =>
                 {
-                    b.HasOne("DataAccess.DAL.Place", null)
+                    b.HasOne("DataAccess.Models.Place", null)
                         .WithMany("MeetingTypes")
                         .HasForeignKey("PlaceId");
                 });
 
             modelBuilder.Entity("PlacePreference", b =>
                 {
-                    b.HasOne("DataAccess.DAL.Place", null)
+                    b.HasOne("DataAccess.Models.Place", null)
                         .WithMany()
                         .HasForeignKey("PlacesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.DAL.Preference", null)
+                    b.HasOne("DataAccess.Models.Preference", null)
                         .WithMany()
                         .HasForeignKey("PreferencesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -280,30 +300,30 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("PreferenceUser", b =>
                 {
-                    b.HasOne("DataAccess.DAL.Preference", null)
+                    b.HasOne("DataAccess.Models.Preference", null)
                         .WithMany()
                         .HasForeignKey("PreferencesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccess.DAL.User", null)
+                    b.HasOne("DataAccess.Models.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.MeetingStatus", b =>
+            modelBuilder.Entity("DataAccess.Models.MeetingStatus", b =>
                 {
                     b.Navigation("Meetings");
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.MeetingType", b =>
+            modelBuilder.Entity("DataAccess.Models.MeetingType", b =>
                 {
                     b.Navigation("Meetings");
                 });
 
-            modelBuilder.Entity("DataAccess.DAL.Place", b =>
+            modelBuilder.Entity("DataAccess.Models.Place", b =>
                 {
                     b.Navigation("MeetingTypes");
 

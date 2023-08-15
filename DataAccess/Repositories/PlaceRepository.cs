@@ -1,10 +1,10 @@
-﻿using DataAccess.DAL;
+﻿using DataAccess.Models;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class PlaceRepository : IRepository<Place>
+public class PlaceRepository /*: IRepository<Place>*/
 {
     private readonly ApplicationContext _context;
 
@@ -13,7 +13,7 @@ public class PlaceRepository : IRepository<Place>
         _context = context;
     }
 
-    public async Task<int?> CreateAsync(Place place)
+    /*public async Task<int?> CreateAsync(Place place)
     {
         await _context.AddAsync(place);
         await _context.SaveChangesAsync();
@@ -49,5 +49,5 @@ public class PlaceRepository : IRepository<Place>
             _context.Remove(place);
             await _context.SaveChangesAsync();
         }
-    }
+    }*/
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WeWell.ViewModels.Users;
+namespace WeWell.Models.Users;
 
 public class UserUpdate
 {

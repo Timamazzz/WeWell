@@ -2,7 +2,7 @@
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using WeWell.ViewModels;
+using WeWell.Models;
 
 namespace WeWell.Controllers;
 
@@ -19,7 +19,7 @@ public class PreferenceController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost]
+    /*[HttpPost]
     [ProducesResponseType(typeof(int?), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Create a new preference")]
@@ -121,5 +121,5 @@ public class PreferenceController : ControllerBase
         {
             return StatusCode(500, ex.Message);
         }
-    }
+    }*/
 }

@@ -1,4 +1,6 @@
-﻿namespace WeWell.ViewModels.Users;
+﻿using WeWell.Models.Preferences;
+
+namespace WeWell.Models.Users;
 
 public class UserGet
 {
@@ -6,6 +8,6 @@ public class UserGet
     public string? Name { get; set; }
     public string? PhoneNumber { get; set; }
     public string? AvatarPath { get; set; }
-    public bool? isAllPreferences { get; set; }
+    public bool? IsAllPreferences { get; set; }
     public List<Preference>? Preferences { get; set; }
 }

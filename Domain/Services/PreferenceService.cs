@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using DataAccess.Repositories;
-using Domain.DTO;
 using Domain.Interfaces;
 
 namespace Domain.Services;
 
-public class PreferenceService : IService<Preference>
+public class PreferenceService /*: IService<Preference>*/
 {
     private readonly PreferenceRepository _repository;
     private readonly IMapper _mapper;
@@ -16,7 +15,7 @@ public class PreferenceService : IService<Preference>
         _mapper = mapper;
     }
 
-    public async Task<int?> CreateAsync(Preference preference)
+    /*public async Task<int?> CreateAsync(Preference preference)
     {
         DataAccess.DAL.Preference entity = _mapper.Map<DataAccess.DAL.Preference>(preference);
         int? id = await _repository.CreateAsync(entity);
@@ -46,5 +45,5 @@ public class PreferenceService : IService<Preference>
     public async Task DeleteAsync(int id)
     {
         await _repository.DeleteAsync(id);
-    }
+    }*/
 }
