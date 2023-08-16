@@ -49,4 +49,9 @@ public class MeetingTypeRepository : IRepository<MeetingType>
             await _context.SaveChangesAsync();
         }
     }
+    
+    public List<MeetingType> GetPreferencesByIdRange(List<int> typesIdRange)
+    {
+        return _context.MeetingTypes.Where(m => typesIdRange.Contains(m.Id)).ToList();
+    }
 }

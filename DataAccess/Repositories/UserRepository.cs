@@ -29,13 +29,16 @@ public class UserRepository : IRepository<User>
 
     public async Task<User?> GetByIdAsync(int? id)
     {
-        User? user = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
+        User? user = await _context.Users
+            .SingleOrDefaultAsync(u => u.Id == id);
         return user;
     }
 
     public async Task UpdateAsync(User user)
     {
-        _context.Update(user);
+        User? entity = await GetByIdAsync(user.Id);
+        entity.Preferences = user.Preferences;
+        _context.Update(entity);
         await _context.SaveChangesAsync();
     }
 
@@ -52,6 +55,8 @@ public class UserRepository : IRepository<User>
 
     public async Task<User?> GetByPhoneNumberAsync(string phoneNumber)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+        return await _context.Users
+            .Include(user => user.Preferences)
+            .FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
     }
 }

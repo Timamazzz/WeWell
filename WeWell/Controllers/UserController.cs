@@ -127,6 +127,40 @@ namespace WeWell.Controllers
             }
         }
 
+        [HttpPut("avatars")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        [SwaggerOperation("Update Avatar User")]
+        public async Task<ActionResult<UserGet>> UpdateAvatar([FromForm] Image image)
+        {
+            try
+            {
+                if (image == null || image.ImageFile == null || image.ImageFile.Length == 0)
+                {
+                    return BadRequest("Invalid image file");
+                }
+
+                var userDto = await _userService.GetByIdAsync(image.ParentModelId);
+                if (userDto == null)
+                {
+                    return NotFound("User not found");
+                }
+                
+                string pathToUpload = Path.Combine("uploads", "images", "users", image.ParentModelId.ToString());
+                string newAvatarPath = await _imageService.ReplaceImage(userDto.AvatarPath, image.ImageFile, pathToUpload);
+
+                userDto.AvatarPath = newAvatarPath;
+                await _userService.UpdateAsync(userDto);
+
+                var userGet = _mapper.Map<UserGet>(userDto);
+                return Ok(userGet.Url);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        
         [HttpGet("phone/{phoneNumber}")]
         [ProducesResponseType(typeof(UserGet), 200)]
         [ProducesResponseType(typeof(string), 500)]
@@ -155,48 +189,13 @@ namespace WeWell.Controllers
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Send SMS to phone number")]
-        public ActionResult<string> SendSms([FromBody] Phone phone)
+        public ActionResult<string> SendSms(Phone phone)
         {
             try
             {
                 string code = _userService.SendSms(phone.PhoneNumber);
 
                 return Ok(code);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-        
-        [HttpPut("avatars")]
-        [ProducesResponseType(typeof(string), 200)]
-        [ProducesResponseType(typeof(string), 500)]
-        [SwaggerOperation("Update Avatar User")]
-        public async Task<ActionResult<UserGet>> UpdateAvatar([FromForm] Image image)
-        {
-            try
-            {
-                if (image == null || image.ImageFile == null || image.ImageFile.Length == 0)
-                {
-                    return BadRequest("Invalid image file");
-                }
-
-                var userDto = await _userService.GetByIdAsync(image.ParentModelId);
-                if (userDto == null)
-                {
-                    return NotFound("User not found");
-                }
-                
-                string pathToUpload = Path.Combine("uploads", "images", "users", image.ParentModelId.ToString());
-                string newAvatarPath = await _imageService.ReplaceImage(userDto.AvatarPath, image.ImageFile, pathToUpload);
-
-                userDto.AvatarPath = newAvatarPath;
-                await _userService.UpdateAsync(userDto);
-
-                var userGet = _mapper.Map<UserGet>(userDto);
-                return Ok(userGet);
             }
             catch (Exception ex)
             {
