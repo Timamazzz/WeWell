@@ -2,12 +2,12 @@
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using WeWell.ViewModels;
+using WeWell.Models;
 
 namespace WeWell.Controllers;
 
 [ApiController]
-[Route("meetingtypes")]
+[Route("meeting-types")]
 public class MeetingTypeController : ControllerBase
 {
     private readonly MeetingTypeService _service;
@@ -27,8 +27,8 @@ public class MeetingTypeController : ControllerBase
     {
         try
         {
-            var typeDTO = _mapper.Map<Domain.DTO.MeetingType>(type);
-            var id = await _service.CreateAsync(typeDTO);
+            var typeDto = _mapper.Map<Domain.DataTransferObjects.MeetingType>(type);
+            var id = await _service.CreateAsync(typeDto);
             return Ok(id);
         }
         catch (Exception ex)
@@ -45,8 +45,8 @@ public class MeetingTypeController : ControllerBase
     {
         try
         {
-            var typesDTO = await _service.GetAllAsync();
-            var types = _mapper.Map<List<MeetingType>>(typesDTO);
+            var typeDto = await _service.GetAllAsync();
+            var types = _mapper.Map<List<MeetingType>>(typeDto);
             return Ok(types);
         }
         catch (Exception ex)
@@ -63,14 +63,14 @@ public class MeetingTypeController : ControllerBase
     {
         try
         {
-            var typeDTO = await _service.GetByIdAsync(id);
+            var typeDto = await _service.GetByIdAsync(id);
 
-            if (typeDTO == null)
+            if (typeDto == null)
             {
                 return NotFound();
             }
 
-            var type = _mapper.Map<MeetingType>(typeDTO);
+            var type = _mapper.Map<MeetingType>(typeDto);
             return Ok(type);
         }
         catch (Exception ex)
@@ -87,8 +87,8 @@ public class MeetingTypeController : ControllerBase
     {
         try
         {
-            Domain.DTO.MeetingType typeDTO = _mapper.Map<Domain.DTO.MeetingType>(type);
-            await _service.UpdateAsync(typeDTO);
+            Domain.DataTransferObjects.MeetingType typeDto = _mapper.Map<Domain.DataTransferObjects.MeetingType>(type);
+            await _service.UpdateAsync(typeDto);
 
             return Ok();
         }

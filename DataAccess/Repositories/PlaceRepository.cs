@@ -1,4 +1,4 @@
-﻿using DataAccess.DAL;
+﻿using DataAccess.Models;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

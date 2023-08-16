@@ -2,7 +2,7 @@
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using WeWell.ViewModels;
+using WeWell.Models;
 
 namespace WeWell.Controllers;
 
@@ -27,8 +27,8 @@ public class PreferenceController : ControllerBase
     {
         try
         {
-            var preferenceDTO = _mapper.Map<Domain.DTO.Preference>(preference);
-            var id = await _service.CreateAsync(preferenceDTO);
+            var preferenceDto = _mapper.Map<Domain.DataTransferObjects.Preference>(preference);
+            var id = await _service.CreateAsync(preferenceDto);
             return Ok(id);
         }
         catch (Exception ex)
@@ -45,8 +45,8 @@ public class PreferenceController : ControllerBase
     {
         try
         {
-            var preferencesDTO = await _service.GetAllAsync();
-            var preferences = _mapper.Map<List<Preference>>(preferencesDTO);
+            var preferenceDto = await _service.GetAllAsync();
+            var preferences = _mapper.Map<List<Preference>>(preferenceDto);
             return Ok(preferences);
         }
         catch (Exception ex)
@@ -63,14 +63,14 @@ public class PreferenceController : ControllerBase
     {
         try
         {
-            var preferenceDTO = await _service.GetByIdAsync(id);
+            var preferenceDto = await _service.GetByIdAsync(id);
 
-            if (preferenceDTO == null)
+            if (preferenceDto == null)
             {
                 return NotFound();
             }
 
-            var preference = _mapper.Map<Preference>(preferenceDTO);
+            var preference = _mapper.Map<Preference>(preferenceDto);
             return Ok(preference);
         }
         catch (Exception ex)
@@ -87,7 +87,7 @@ public class PreferenceController : ControllerBase
     {
         try
         {
-            Domain.DTO.Preference preferenceDto = _mapper.Map<Domain.DTO.Preference>(preference);
+            Domain.DataTransferObjects.Preference preferenceDto = _mapper.Map<Domain.DataTransferObjects.Preference>(preference);
             await _service.UpdateAsync(preferenceDto);
 
             return Ok();

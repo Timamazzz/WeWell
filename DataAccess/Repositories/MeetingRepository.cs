@@ -1,10 +1,10 @@
 ﻿using DataAccess.Interfaces;
-using DataAccess.DAL;
+using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
 
-public class MeetingRepository : IRepository<Meeting>
+public class MeetingRepository /*: IRepository<Meeting>*/
 {
     private readonly ApplicationContext _context;
 
@@ -13,7 +13,7 @@ public class MeetingRepository : IRepository<Meeting>
         _context = context;
     }
 
-    public async Task<int?> CreateAsync(Meeting meeting)
+    /*public async Task<int?> CreateAsync(Meeting meeting)
     {
 
         await _context.AddAsync(meeting);
@@ -51,5 +51,5 @@ public class MeetingRepository : IRepository<Meeting>
             _context.Remove(meeting);
             await _context.SaveChangesAsync();
         }
-    }
+    }*/
 }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DataAccess.Repositories;
-using Domain.DTO;
+using Domain.DataTransferObjects;
 using Domain.Interfaces;
 
 namespace Domain.Services;
@@ -18,28 +18,28 @@ public class PreferenceService : IService<Preference>
 
     public async Task<int?> CreateAsync(Preference preference)
     {
-        DataAccess.DAL.Preference entity = _mapper.Map<DataAccess.DAL.Preference>(preference);
+        DataAccess.Models.Preference entity = _mapper.Map<DataAccess.Models.Preference>(preference);
         int? id = await _repository.CreateAsync(entity);
         return id;
     }
 
     public async Task<List<Preference>?> GetAllAsync()
     {
-        List<DataAccess.DAL.Preference>? entities = await _repository.GetAllAsync();
+        List<DataAccess.Models.Preference>? entities = await _repository.GetAllAsync();
         List<Preference>? preferences = _mapper.Map<List<Preference>>(entities);
         return preferences;
     }
 
     public async Task<Preference?> GetByIdAsync(int id)
     {
-        DataAccess.DAL.Preference? entity = await _repository.GetByIdAsync(id);
+        DataAccess.Models.Preference? entity = await _repository.GetByIdAsync(id);
         Preference? preference = _mapper.Map<Preference>(entity);
         return preference;
     }
 
     public async Task UpdateAsync(Preference preference)
     {
-        DataAccess.DAL.Preference entity = _mapper.Map<DataAccess.DAL.Preference>(preference);
+        DataAccess.Models.Preference entity = _mapper.Map<DataAccess.Models.Preference>(preference);
         await _repository.UpdateAsync(entity);
     }
 

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DataAccess.Repositories;
-using Domain.DTO;
+using Domain.DataTransferObjects;
 using Domain.Interfaces;
 
 namespace Domain.Services;
@@ -18,28 +18,28 @@ public class MeetingTypeService : IService<MeetingType>
 
     public async Task<int?> CreateAsync(MeetingType type)
     {
-        DataAccess.DAL.MeetingType entity = _mapper.Map<DataAccess.DAL.MeetingType>(type);
+        DataAccess.Models.MeetingType entity = _mapper.Map<DataAccess.Models.MeetingType>(type);
         int? id = await _repository.CreateAsync(entity);
         return id;
     }
 
     public async Task<List<MeetingType>?> GetAllAsync()
     {
-        List<DataAccess.DAL.MeetingType>? entities = await _repository.GetAllAsync();
+        List<DataAccess.Models.MeetingType>? entities = await _repository.GetAllAsync();
         List<MeetingType>? types = _mapper.Map<List<MeetingType>>(entities);
         return types;
     }
 
     public async Task<MeetingType?> GetByIdAsync(int id)
     {
-        DataAccess.DAL.MeetingType? entity = await _repository.GetByIdAsync(id);
+        DataAccess.Models.MeetingType? entity = await _repository.GetByIdAsync(id);
         MeetingType? type = _mapper.Map<MeetingType>(entity);
         return type;
     }
 
     public async Task UpdateAsync(MeetingType type)
     {
-        DataAccess.DAL.MeetingType entity = _mapper.Map<DataAccess.DAL.MeetingType>(type);
+        DataAccess.Models.MeetingType entity = _mapper.Map<DataAccess.Models.MeetingType>(type);
         await _repository.UpdateAsync(entity);
     }
 

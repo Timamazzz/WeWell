@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using WeWell.ViewModels.Meetings;
+using WeWell.Models.Meetings;
 
 namespace WeWell.Controllers;
 
@@ -17,7 +17,7 @@ public class MeetingsController : ControllerBase
         _mapper = mapper;
     }
 
-    [HttpPost]
+    /*[HttpPost]
     [ProducesResponseType(typeof(int?), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Create a new meeting")]
@@ -32,5 +32,5 @@ public class MeetingsController : ControllerBase
         {
             return StatusCode(500, ex.Message);
         }
-    }
+    }*/
 }

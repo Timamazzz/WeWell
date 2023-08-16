@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DataAccess.DAL;
+﻿using DataAccess.Models;
 using DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,22 +26,18 @@ public class PreferenceRepository : IRepository<Preference>
         List<Preference> preferences = await _context.Preferences.OrderBy(p => p.Id).ToListAsync();
         return preferences;
     }
-
-    public async Task<List<Preference>?> GetPreferencesByIdsAsync(List<int> preferenceIds)
-    {
-        List<Preference>? preferences = await _context.Preferences
-            .Where(p => preferenceIds.Contains(p.Id))
-            .ToListAsync();
-
-        return preferences;
-    }
-
+    
     public async Task<Preference?> GetByIdAsync(int? id)
     {
         Preference? preference = await _context.Preferences.SingleOrDefaultAsync(p => p.Id == id);
         return preference;
     }
 
+    public List<Preference> GetPreferencesByIdRange(List<int> preferencesIdRange)
+    {
+        return _context.Preferences.Where(p => preferencesIdRange.Contains(p.Id)).ToList();
+    }
+    
     public async Task UpdateAsync(Preference preference)
     {
         _context.Update(preference);

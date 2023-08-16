@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using DataAccess.Repositories;
-using Domain.DTO;
 using Domain.Interfaces;
 
 namespace Domain.Services;
 
-public class MeetingService : IService<Meeting>
+public class MeetingService/* : IService<Meeting>*/
 {
     private readonly MeetingRepository _repository;
     private readonly UserService _userService;
@@ -22,7 +21,7 @@ public class MeetingService : IService<Meeting>
         _preferenceService = preferenceService;
     }
 
-    public async Task<int?> CreateAsync(Meeting meeting)
+    /*public async Task<int?> CreateAsync(Meeting meeting)
     {
         DataAccess.DAL.Meeting entity = _mapper.Map<DataAccess.DAL.Meeting>(meeting);
         
@@ -93,5 +92,5 @@ public class MeetingService : IService<Meeting>
     public async Task DeleteAsync(int id)
     {
         await _repository.DeleteAsync(id);
-    }
+    }*/
 }

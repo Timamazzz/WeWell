@@ -1,5 +1,5 @@
 ﻿using DataAccess.Interfaces;
-using DataAccess.DAL;
+using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.Repositories;
@@ -48,5 +48,10 @@ public class MeetingTypeRepository : IRepository<MeetingType>
             _context.Remove(meetingType);
             await _context.SaveChangesAsync();
         }
+    }
+    
+    public List<MeetingType> GetPreferencesByIdRange(List<int> typesIdRange)
+    {
+        return _context.MeetingTypes.Where(m => typesIdRange.Contains(m.Id)).ToList();
     }
 }
