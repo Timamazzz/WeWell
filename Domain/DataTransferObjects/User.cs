@@ -5,8 +5,6 @@ public class User
         public string? Name { get; set; }
         public string? PhoneNumber { get; set; }
         public string? AvatarPath { get; set; }
-        public byte[]? Avatar { get; set; }
-        public string? AvatarExtensions { get; set; }
         public bool? IsAllPreferences { get; set; }
         public List<Preference>? Preferences { get; set; }
     }

@@ -33,6 +33,11 @@ public class PreferenceRepository : IRepository<Preference>
         return preference;
     }
 
+    public List<Preference> GetPreferencesByIdRange(List<int> preferenceIds)
+    {
+        return _context.Preferences.Where(p => preferenceIds.Contains(p.Id)).ToList();
+    }
+    
     public async Task UpdateAsync(Preference preference)
     {
         _context.Update(preference);

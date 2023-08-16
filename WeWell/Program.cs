@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using WeWell.AutoMapper;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
+using WeWell.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,13 @@ builder.Services.AddScoped<PreferenceRepository>();
 // Add services to the container.
 builder.Services.AddControllers();
 
+//Http
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddLogging(builder =>
+{
+    builder.AddConsole(); // Добавьте провайдеры логирования по вашему выбору
+});
+
 // Enable CORS
 builder.Services.AddCors(options =>
 {
@@ -71,8 +79,8 @@ app.UseSwaggerUI(c =>
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads")),
-    RequestPath = "/Uploads"
+        Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads")),
+    RequestPath = "/uploads"
 });
 
 app.UseCors("AllowLocalhost");

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Domain.Services;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using WeWell.Models;
+using WeWell.Models.Users;
+using WeWell.Services;
 
 namespace WeWell.Controllers
 {
@@ -12,26 +14,25 @@ namespace WeWell.Controllers
     {
         private readonly UserService _userService;
         private readonly IMapper _mapper;
-        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly ImageService _imageService;
 
-        public UserController(UserService userService, IMapper mapper, IWebHostEnvironment webHostEnvironment)
+        public UserController(UserService userService, IMapper mapper, ImageService imageService)
         {
             _userService = userService;
             _mapper = mapper;
-            _webHostEnvironment = webHostEnvironment;
+            _imageService = imageService;
         }
 
-        /*[HttpPost]
+        [HttpPost]
         [ProducesResponseType(typeof(int?), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Create a new user")]
-        public async Task<ActionResult<int?>> CreateUser([FromForm] UserCreate user)
+        public async Task<ActionResult<int?>> CreateUser(UserCreate user)
         {
             try
             {
-                _userService._webRootPath = _webHostEnvironment.WebRootPath;
-                var userDTO = _mapper.Map<Domain.DTO.User>(user);
-                var userId = await _userService.CreateAsync(userDTO);
+                var userDto = _mapper.Map<Domain.DataTransferObjects.User>(user);
+                var userId = await _userService.CreateAsync(userDto);
                 return Ok(userId);
             }
             catch (Exception ex)
@@ -48,8 +49,8 @@ namespace WeWell.Controllers
         {
             try
             {
-                var usersDTO = await _userService.GetAllAsync();
-                var users = _mapper.Map<List<UserGet>>(usersDTO);
+                var userDto = await _userService.GetAllAsync();
+                var users = _mapper.Map<List<UserGet>>(userDto);
                 return Ok(users);
             }
             catch (Exception ex)
@@ -66,14 +67,14 @@ namespace WeWell.Controllers
         {
             try
             {
-                var userDTO = await _userService.GetByIdAsync(id);
+                var userDto = await _userService.GetByIdAsync(id);
 
-                if (userDTO == null)
+                if (userDto == null)
                 {
                     return NotFound();
                 }
 
-                var user = _mapper.Map<UserGet>(userDTO);
+                var user = _mapper.Map<UserGet>(userDto);
                 return Ok(user);
             }
             catch (Exception ex)
@@ -86,13 +87,12 @@ namespace WeWell.Controllers
         [ProducesResponseType(typeof(void), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Update a user")]
-        public async Task<ActionResult> UpdateUser([FromForm] UserUpdate user)
+        public async Task<ActionResult> UpdateUser(UserUpdate user)
         {
             try
             {
-                _userService._webRootPath = _webHostEnvironment.WebRootPath;
-                Domain.DTO.User userDTO = _mapper.Map<Domain.DTO.User>(user);
-                await _userService.UpdateAsync(userDTO);
+                Domain.DataTransferObjects.User userDto = _mapper.Map<Domain.DataTransferObjects.User>(user);
+                await _userService.UpdateAsync(userDto);
 
                 return Ok();
             }
@@ -110,10 +110,9 @@ namespace WeWell.Controllers
         {
             try
             {
-                _userService._webRootPath = _webHostEnvironment.WebRootPath;
-                var userDTO = await _userService.GetByIdAsync(id);
+                var userDto = await _userService.GetByIdAsync(id);
 
-                if (userDTO == null)
+                if (userDto == null)
                 {
                     return NotFound();
                 }
@@ -136,14 +135,14 @@ namespace WeWell.Controllers
         {
             try
             {
-                var userDTO = await _userService.GetByPhoneNumberAsync(phoneNumber);
+                var userDto = await _userService.GetByPhoneNumberAsync(phoneNumber);
 
-                if (userDTO == null)
+                if (userDto == null)
                 {
                     return NotFound();
                 }
 
-                var user = _mapper.Map<UserGet>(userDTO);
+                var user = _mapper.Map<UserGet>(userDto);
                 return Ok(user);
             }
             catch (Exception ex)
@@ -152,15 +151,15 @@ namespace WeWell.Controllers
             }
         }
 
-        [HttpPost("phone/{phoneNumber}")]
+        [HttpPost("phone")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Send SMS to phone number")]
-        public ActionResult<string> SendSms(string phoneNumber)
+        public ActionResult<string> SendSms([FromBody] Phone phone)
         {
             try
             {
-                string code = _userService.SendSms(phoneNumber);
+                string code = _userService.SendSms(phone.PhoneNumber);
 
                 return Ok(code);
             }
@@ -168,6 +167,41 @@ namespace WeWell.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
-        }*/
+        }
+
+        
+        [HttpPut("avatars")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        [SwaggerOperation("Update Avatar User")]
+        public async Task<ActionResult<UserGet>> UpdateAvatar([FromForm] Image image)
+        {
+            try
+            {
+                if (image == null || image.ImageFile == null || image.ImageFile.Length == 0)
+                {
+                    return BadRequest("Invalid image file");
+                }
+
+                var userDto = await _userService.GetByIdAsync(image.ParentModelId);
+                if (userDto == null)
+                {
+                    return NotFound("User not found");
+                }
+                
+                string pathToUpload = Path.Combine("uploads", "images", "users", image.ParentModelId.ToString());
+                string newAvatarPath = await _imageService.ReplaceImage(userDto.AvatarPath, image.ImageFile, pathToUpload);
+
+                userDto.AvatarPath = newAvatarPath;
+                await _userService.UpdateAsync(userDto);
+
+                var userGet = _mapper.Map<UserGet>(userDto);
+                return Ok(userGet);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
     }
 }

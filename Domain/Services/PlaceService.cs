@@ -8,16 +8,13 @@ public class PlaceService /*: IService<Place>*/
 {
     private readonly PlaceRepository _repository;
     private readonly PreferenceRepository _repositoryPreference;
-    private readonly ImageService _imageService;
     private readonly IMapper _mapper;
-    public string _webRootPath;
 
-    public PlaceService(PlaceRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, ImageService imageService)
+    public PlaceService(PlaceRepository repository, PreferenceRepository repositoryPreference, IMapper mapper)
     {
         _repository = repository;
         _repositoryPreference = repositoryPreference;
         _mapper = mapper;
-        _imageService = imageService;
     }
 
     /*public async Task<int?> CreateAsync(Place place)

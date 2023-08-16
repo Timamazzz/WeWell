@@ -20,6 +20,8 @@ public class AppMappingDtoToPresentationModelsProfile : Profile
 {
     public AppMappingDtoToPresentationModelsProfile()
     {
+        
+        var imageResolver = new ImageResolver(new HttpContextAccessor());
         /*//Users
         CreateMap<Domain.DTO.User, ViewModels.Users.UserCreate>()
             .ForMember(dest => dest.Avatar, opt => opt.MapFrom(src => ConvertImageToByteArray(src.Avatar)))
@@ -47,16 +49,12 @@ public class AppMappingDtoToPresentationModelsProfile : Profile
         CreateMap<Domain.DataTransferObjects.MeetingStatus, Models.MeetingStatus>().ReverseMap();
         CreateMap<Domain.DataTransferObjects.MeetingType, Models.MeetingType>().ReverseMap();
         CreateMap<Domain.DataTransferObjects.Preference, Models.Preference>().ReverseMap();
-    }
-
-    private static byte[]? ConvertImageToByteArray(IFormFile? image)
-    {
-        if (image != null)
-        {
-            using var memoryStream = new MemoryStream();
-            image.CopyTo(memoryStream);
-            return memoryStream.ToArray();
-        }
-        return null;
+        //Users
+        CreateMap<Domain.DataTransferObjects.User, Models.Users.UserCreate>().ReverseMap();
+        CreateMap<Domain.DataTransferObjects.User, Models.Users.UserUpdate>().ReverseMap();
+        CreateMap<Domain.DataTransferObjects.User, Models.Users.UserGet>()
+            .ForMember(dest => dest.Url, opt => opt.MapFrom(src => imageResolver.Resolve(src, null, src.AvatarPath, null)))
+            .ForMember(dest => dest.AvatarPath, opt => opt.MapFrom(src => src.AvatarPath))
+            .ReverseMap();
     }
 }

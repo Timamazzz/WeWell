@@ -1,18 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DataAccess.Models;
+namespace WeWell.Models.Users;
 
-public class User
+public class UserUpdate
 {
     [Required]
-    public int Id { get; set; }
-    [Required]
+    public int? Id { get; set; }
     public string? Name { get; set; }
     [Required]
     public string? PhoneNumber { get; set; }
-    public string? AvatarPath { get; set; }
     [Required]
     public bool? IsAllPreferences { get; set; }
-    public List<Preference> Preferences { get; set; } = new List<Preference>();
-    
+    public List<Preference>? Preferences { get; set; }
 }
