@@ -61,9 +61,9 @@ public class PlaceService : IService<Place>
         var newPreferences = _repositoryPreference.GetPreferencesByIdRange(preferencesIdRange);
         entity.Preferences = newPreferences;
         
-        /*var typesIdRange = place.MeetingTypes.Select(p => p.Id).ToList();
+        var typesIdRange = place.MeetingTypes.Select(p => p.Id).ToList();
         var newTypes = _repositoryMeetingType.GetMeetingTypesByIdRange(typesIdRange);
-        entity.MeetingTypes = newTypes;*/
+        entity.MeetingTypes = newTypes;
         
         await _repository.UpdateAsync(entity);
     }
