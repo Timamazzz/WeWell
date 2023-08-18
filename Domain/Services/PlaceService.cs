@@ -9,25 +9,19 @@ public class PlaceService : IService<Place>
 {
     private readonly PlaceRepository _repository;
     private readonly PreferenceRepository _repositoryPreference;
-    private readonly MeetingTypeRepository _meetingTypeRepository;
+    private readonly MeetingTypeRepository _repositoryMeetingType;
     private readonly IMapper _mapper;
 
-    public PlaceService(PlaceRepository repository, PreferenceRepository repositoryPreference, MeetingTypeRepository meetingTypeRepository, IMapper mapper)
+    public PlaceService(PlaceRepository repository, PreferenceRepository repositoryPreference, MeetingTypeRepository repositoryMeetingType, IMapper mapper)
     {
         _repository = repository;
         _repositoryPreference = repositoryPreference;
-        _meetingTypeRepository = meetingTypeRepository;
+        _repositoryMeetingType = repositoryMeetingType;
         _mapper = mapper;
     }
 
     public async Task<int?> CreateAsync(Place place)
     {
-        var existingPlace = await _repository.GetByIdAsync(place.Id);
-        if (existingPlace != null)
-        {
-            throw new Exception("Place with the same ID already exists.");
-        }
-
         DataAccess.Models.Place entity = _mapper.Map<DataAccess.Models.Place>(place);
 
         var preferencesIdRange = place.Preferences.Select(p => p.Id).ToList();
@@ -35,7 +29,7 @@ public class PlaceService : IService<Place>
         entity.Preferences = newPreferences;
 
         var typesIdRange = place.MeetingTypes.Select(m => m.Id).ToList();
-        var newTypes = _meetingTypeRepository.GetPreferencesByIdRange(preferencesIdRange);
+        var newTypes = _repositoryMeetingType.GetMeetingTypesByIdRange(preferencesIdRange);
         entity.MeetingTypes = newTypes;
         
         int? id = await _repository.CreateAsync(entity);
@@ -60,7 +54,17 @@ public class PlaceService : IService<Place>
     public async Task UpdateAsync(Place place)
     {
 
-        DataAccess.Models.Place entity = _mapper.Map<DataAccess.Models.Place>(place);
+        var entity = await _repository.GetByIdAsync(place.Id);
+        _mapper.Map(place, entity);
+        
+        var preferencesIdRange = place.Preferences.Select(p => p.Id).ToList();
+        var newPreferences = _repositoryPreference.GetPreferencesByIdRange(preferencesIdRange);
+        entity.Preferences = newPreferences;
+        
+        /*var typesIdRange = place.MeetingTypes.Select(p => p.Id).ToList();
+        var newTypes = _repositoryMeetingType.GetMeetingTypesByIdRange(typesIdRange);
+        entity.MeetingTypes = newTypes;*/
+        
         await _repository.UpdateAsync(entity);
     }
 
