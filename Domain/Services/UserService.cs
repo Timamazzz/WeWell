@@ -20,20 +20,27 @@ public class UserService : IService<User>
         _smsService = smsService;
     }
 
-    private async Task SetNewPreferences(DataAccess.Models.User user)
+    public async Task SetNewPreferences(DataAccess.Models.User user)
     {
-       
+        user.Preferences.Clear();
+        var preferencesIdRange = user.Preferences.Select(p => p.Id).ToList();
+        var newPreferences = _repositoryPreference.GetPreferencesByIdRange(preferencesIdRange);
+        user.Preferences = newPreferences;
+        await _repository.UpdateAsync(user);
     }
 
     public async Task<int?> CreateAsync(User user)
     {
+        var existingUser = await _repository.GetByIdAsync(user.Id);
+        if (existingUser != null)
+        {
+            throw new Exception("User with the same ID already exists.");
+        }
+        
+        
         DataAccess.Models.User entity = _mapper.Map<DataAccess.Models.User>(user);
-        
-        var preferencesIdRange = user.Preferences.Select(p => p.Id).ToList();
-        var newPreferences = _repositoryPreference.GetPreferencesByIdRange(preferencesIdRange);
-        entity.Preferences = newPreferences;
-        
         int? id = await _repository.CreateAsync(entity);
+        await SetNewPreferences(entity);
         return id;
     }
 
@@ -57,11 +64,7 @@ public class UserService : IService<User>
         entity.Preferences.Clear();
         _mapper.Map(user, entity);
         await _repository.UpdateAsync(entity);
-        
-        var preferencesIdRange = user.Preferences.Select(p => p.Id).ToList();
-        var newPreferences = _repositoryPreference.GetPreferencesByIdRange(preferencesIdRange);
-        entity.Preferences = newPreferences;
-        await _repository.UpdateAsync(entity);
+        await SetNewPreferences(entity);
     }
 
     public async Task DeleteAsync(int id)

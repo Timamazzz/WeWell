@@ -29,7 +29,7 @@ public class UserRepository : IRepository<User>
 
     public async Task<User?> GetByIdAsync(int? id)
     {
-        User? user = await _context.Users.Include(user => user.Preferences).SingleOrDefaultAsync(u => u.Id == id);
+        User? user = await _context.Users.SingleOrDefaultAsync(u => u.Id == id);
         return user;
     }
 
