@@ -29,16 +29,13 @@ public class UserRepository : IRepository<User>
 
     public async Task<User?> GetByIdAsync(int? id)
     {
-        User? user = await _context.Users
-            .SingleOrDefaultAsync(u => u.Id == id);
+        User? user = await _context.Users.Include(user => user.Preferences).SingleOrDefaultAsync(u => u.Id == id);
         return user;
     }
 
     public async Task UpdateAsync(User user)
     {
-        User? entity = await GetByIdAsync(user.Id);
-        entity.Preferences = user.Preferences;
-        _context.Update(entity);
+        _context.Update(user);
         await _context.SaveChangesAsync();
     }
 

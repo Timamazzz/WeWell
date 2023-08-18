@@ -11,8 +11,8 @@ public class PlaceGet
     public int? MaxPrice { get; set; }
     public string? StartWork { get; set; }
     public string? EndWork { get; set; }
-    public List<int>? Preferences { get; set; }
-    public List<int>? MeetingTypes { get; set; }
     public int? MinDurationHours { get; set; }
     public int? MaxDurationHours { get; set; }
+    public List<Preference>? Preferences { get; set; }
+    public List<MeetingType>? MeetingTypes { get; set; }
 }

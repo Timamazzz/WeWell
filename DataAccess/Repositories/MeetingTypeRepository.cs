@@ -50,7 +50,7 @@ public class MeetingTypeRepository : IRepository<MeetingType>
         }
     }
     
-    public List<MeetingType> GetPreferencesByIdRange(List<int> typesIdRange)
+    public List<MeetingType> GetMeetingTypesByIdRange(List<int> typesIdRange)
     {
         return _context.MeetingTypes.Where(m => typesIdRange.Contains(m.Id)).ToList();
     }

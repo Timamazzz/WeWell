@@ -23,14 +23,20 @@ public class PlaceRepository : IRepository<Place>
 
     public async Task<List<Place>?> GetAllAsync()
     {
-        List<Place> places = await _context.Places.Include(p => p.Preferences).ToListAsync();
+        List<Place> places = await _context.Places
+            .Include(p => p.Preferences)
+            .Include(p => p.MeetingTypes)
+            .ToListAsync();
         return places;
     }
 
 
     public async Task<Place?> GetByIdAsync(int? id)
     {
-        Place? place = await _context.Places.SingleOrDefaultAsync(p => p.Id == id);
+        Place? place = await _context.Places
+            .Include(p => p.Preferences)
+            .Include(p => p.MeetingTypes)
+            .SingleOrDefaultAsync(p => p.Id == id);
         return place;
     }
 
