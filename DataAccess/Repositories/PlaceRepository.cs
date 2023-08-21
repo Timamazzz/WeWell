@@ -57,17 +57,16 @@ public class PlaceRepository : IRepository<Place>
         }
     }
     
-    public async Task<Place>? GetByForMeetingCreate(List<Preference> preferences, int minPrice, int maxPrice, int minDuration, int maxDuration, int meetingTypeId)
+    public async Task<Place>? GetByForMeetingCreate(List<Preference> preferences, int maxPrice, int maxDuration, int meetingTypeId)
     {
         var places = await _context.Places
             .Where(place =>
-                (place.MinPrice >= minPrice && place.MaxPrice <= maxPrice) &&
-                (place.MinDurationHours >= minDuration && place.MaxDurationHours <= maxDuration) &&
-                (place.MeetingTypes.Any(mt => mt.Id == meetingTypeId)) &&
-                (place.Preferences.All(p => preferences.Contains(p)))
-            )
+                (place.MaxPrice <= maxPrice) &&
+                (place.MaxDurationHours <= maxDuration) &&
+                (place.Preferences.All(p => preferences.Contains(p))) &&
+                (place.MeetingTypes.Any(mt => mt.Id == meetingTypeId)))
             .ToListAsync();
-
+        
         if (places.Count == 0)
         {
             return null;

@@ -37,4 +37,22 @@ public class MeetingsController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
+    
+    [HttpGet]
+    [ProducesResponseType(typeof(List<MeetingGet>), 200)]
+    [ProducesResponseType(typeof(string), 500)]
+    [SwaggerOperation("Get all meetings")]
+    public async Task<ActionResult<List<MeetingGet>>> GetAllMeetings()
+    {
+        try
+        {
+            var meetingsDto = await _service.GetAllAsync();
+            var meetings = _mapper.Map<List<MeetingGet>>(meetingsDto);
+            return Ok(meetings);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
 }

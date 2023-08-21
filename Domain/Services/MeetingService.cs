@@ -12,14 +12,22 @@ public class MeetingService : IService<Meeting>
     private readonly PlaceService _placeService;
     private readonly PreferenceService _preferenceService;
     private readonly IMapper _mapper;
+    private readonly PlaceRepository _placeRepository;
+    private readonly UserRepository _userRepository;
+    private readonly MeetingTypeRepository _meetingTypeRepository;
 
-    public MeetingService(MeetingRepository repository, IMapper mapper, UserService userService, PlaceService placeService, PreferenceService preferenceService)
+    public MeetingService(MeetingRepository repository, IMapper mapper, UserService userService, 
+        PlaceService placeService, PreferenceService preferenceService, PlaceRepository placeRepository, 
+        UserRepository userRepository, MeetingTypeRepository meetingTypeRepository)
     {
         _repository = repository;
         _mapper = mapper;
         _userService = userService;
         _placeService = placeService;
         _preferenceService = preferenceService;
+        _placeRepository = placeRepository;
+        _userRepository = userRepository;
+        _meetingTypeRepository = meetingTypeRepository;
     }
 
     public async Task<int?> CreateAsync(Meeting meeting)
@@ -32,18 +40,30 @@ public class MeetingService : IService<Meeting>
         
         List<Preference>? preferences = await GetPreferences(meeting.Creator, meeting.Guest);
         
-        Place? suitablePlace = await FindSuitablePlace(preferences, meeting.MinPrice.Value, meeting.MaxPrice.Value, meeting.MinDurationHours.Value, meeting.MaxDurationHours.Value, meeting.Type.Id);
+        int? suitablePlaceId = await FindSuitablePlace(preferences, meeting.MaxPrice.Value, meeting.MaxDurationHours.Value, meeting.Type.Id);
         
-        /*DataAccess.Models.Meeting entity = _mapper.Map<DataAccess.Models.Meeting>(meeting);
-        int? id = await _repository.CreateAsync(entity);*/
+        meeting.IsActive = true;
+        meeting.IsShowForCreator = true;
+        meeting.IsShowForGuest = true;
+        meeting.IsArchive = false;
+        meeting.Status = MeetingStatus.Invited.ToString();
         
-        return 0;
+        DataAccess.Models.Meeting entity = _mapper.Map<DataAccess.Models.Meeting>(meeting);
+
+        entity.Place = await _placeRepository.GetByIdAsync(suitablePlaceId);
+        entity.Creator = await _userRepository.GetByIdAsync(meeting.CreatorId);
+        entity.Guest = await _userRepository.GetByIdAsync(meeting.GuestId);
+        entity.Type = await _meetingTypeRepository.GetByIdAsync(meeting.Type.Id);
+        int? id = await _repository.CreateAsync(entity);
+        
+        return id;
     }
 
     public async Task<List<Meeting>?> GetAllAsync()
     {
         List<DataAccess.Models.Meeting>? entities = await _repository.GetAllAsync();
         List<Meeting>? meetings = _mapper.Map<List<Meeting>>(entities);
+        Console.WriteLine("String for debug");
         return meetings;
     }
 
@@ -76,8 +96,16 @@ public class MeetingService : IService<Meeting>
         }
         else
         {
-            var commonPreferences = creator.Preferences.Intersect(guest.Preferences).ToList();
-            return commonPreferences.Count > 0 ? commonPreferences : creator.Preferences.Concat(guest.Preferences).ToList();
+            var commonPreferences = creator.Preferences
+                .Where(creatorPref => guest.Preferences.Any(guestPref => creatorPref.Id == guestPref.Id))
+                .ToList();
+    
+            if (commonPreferences.Count == 0)
+            {
+                commonPreferences = creator.Preferences.Concat(guest.Preferences).ToList();
+            }
+
+            return commonPreferences;
         }
     }
 
@@ -86,29 +114,17 @@ public class MeetingService : IService<Meeting>
         await _repository.DeleteAsync(id);
     }
     
-    private async Task<Place?> FindSuitablePlace(List<Preference> preferences, int minPrice, int maxPrice, int minDuration, int maxDuration, int meetingTypeId)
+    private async Task<int?> FindSuitablePlace(List<Preference> preferences, int maxPrice, int maxDuration, int meetingTypeId)
     {
-        Place? place = await _placeService.GetByForMeetingCreate(preferences, minPrice, maxPrice, minDuration, maxDuration, meetingTypeId);
+        Place? place = await _placeService.GetByForMeetingCreate(preferences, maxPrice, maxDuration, meetingTypeId);
 
         if (place != null)
         {
-            return place;
+            return place.Id;
         }
         else
         {
-            if (minPrice >= 500)
-            {
-                minPrice -= 500;
-            }
-            else if (minDuration >= 1)
-            {
-                minDuration--;
-            }
-            else
-            {
-                return null;
-            }
-            return await FindSuitablePlace(preferences, minPrice, maxPrice, minDuration, maxDuration, meetingTypeId);
+            return null;
         }
     }
 

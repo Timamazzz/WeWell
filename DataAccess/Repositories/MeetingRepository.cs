@@ -24,7 +24,11 @@ public class MeetingRepository : IRepository<Meeting>
 
     public async Task<List<Meeting>?> GetAllAsync()
     {
-        List<Meeting> meetings = await _context.Meetings.OrderBy(meeting => meeting.Id).ToListAsync();
+        List<Meeting> meetings = await _context.Meetings.
+            Include(m => m.Creator).
+            Include(m => m.Guest).
+            Include(m => m.Place).
+            OrderBy(meeting => meeting.Id).ToListAsync();
 
         return meetings;
     }
