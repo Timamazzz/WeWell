@@ -7,10 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Upload\**" />
-    <Content Remove="Upload\**" />
-    <EmbeddedResource Remove="Upload\**" />
-    <None Remove="Upload\**" />
+    <Compile Remove="upload\**" />
+    <Content Remove="upload\**" />
+    <EmbeddedResource Remove="upload\**" />
+    <None Remove="upload\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\uploads\" />
-    <Folder Include="wwwroot\uploads\images\users" />
+    <Folder Include="wwwroot\uploads\images" />
   </ItemGroup>
   
 </Project>

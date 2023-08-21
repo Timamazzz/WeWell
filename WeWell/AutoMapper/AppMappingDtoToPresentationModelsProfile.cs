@@ -39,5 +39,6 @@ public class AppMappingDtoToPresentationModelsProfile : Profile
                 opt => opt.MapFrom(src => imageResolver.Resolve(src, null, src.ImagePath, null)))
             .ForMember(dest => dest.ImagePath, opt => opt.MapFrom(src => src.ImagePath))
             .ReverseMap();
+        CreateMap<Domain.DataTransferObjects.Meeting, Models.Meetings.MeetingCreate>().ReverseMap();
     }
 }

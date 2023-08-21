@@ -14,7 +14,6 @@ public class ApplicationContext : DbContext
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Preference> Preferences { get; set; } = null!;
     public DbSet<Meeting> Meetings { get; set; } = null!;
-    public DbSet<MeetingStatus> MeetingStatuses { get; set; } = null!;
     public DbSet<MeetingType> MeetingTypes { get; set; } = null!;
     public DbSet<Place> Places { get; set; } = null!;
 }

@@ -23,7 +23,12 @@ public class Meeting
     [Required]
     public MeetingType? Type { get; set; }
     [Required]
-    public MeetingStatus? Status { get; set; }
+    public string? Status { get; set; }
     [Required]
     public Place? Place { get; set; }
+    public bool? IsArchive { get; set; }
+    public bool? IsActive { get; set; }
+    public bool? IsShowForCreator { get; set; }
+    public bool? IsShowForGuest { get; set; }
+    
 }

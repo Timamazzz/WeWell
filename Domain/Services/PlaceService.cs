@@ -67,12 +67,22 @@ public class PlaceService : IService<Place>
         
         await _repository.UpdateAsync(entity);
     }
-
-
+    
     public async Task DeleteAsync(int id)
     {
         DataAccess.Models.Place? entity = await _repository.GetByIdAsync(id);
         Place? place = _mapper.Map<Place>(entity);
         await _repository.DeleteAsync(id);
     }
+    
+    public async Task<Place?> GetByForMeetingCreate(List<Preference> preferences, int minPrice, int maxPrice, int minDuration, int maxDuration, int meetingTypeId)
+    {
+        var preferencesIdRange =preferences.Select(p => p.Id).ToList();
+        var preferencesDataAccess = _repositoryPreference.GetPreferencesByIdRange(preferencesIdRange);
+
+        var place = _repository.GetByForMeetingCreate(preferencesDataAccess, minPrice,  maxPrice, minDuration,  maxDuration,  meetingTypeId);
+        
+        return _mapper.Map<Place>(place);
+    }
+
 }

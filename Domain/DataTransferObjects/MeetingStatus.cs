@@ -1,7 +1,9 @@
 ﻿namespace Domain.DataTransferObjects;
 
-public class MeetingStatus
+public enum MeetingStatus
 {
-    public int Id { get; set; }
-    public string? Name { get; set; }
+    Invited,
+    Waiting,
+    Cancelled,
+    Completed
 }

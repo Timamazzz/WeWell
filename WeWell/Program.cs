@@ -22,7 +22,6 @@ builder.Services.AddScoped<TimeSpanStringConverter>();
 
 //Services
 builder.Services.AddScoped<PreferenceService>();
-builder.Services.AddScoped<MeetingStatusService>();
 builder.Services.AddScoped<MeetingTypeService>();
 builder.Services.AddScoped<MeetingService>();
 builder.Services.AddScoped<PlaceService>();
@@ -34,7 +33,6 @@ builder.Services.AddScoped<SmsService>();
 //Repositories
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<MeetingRepository>();
-builder.Services.AddScoped<MeetingStatusRepository>();
 builder.Services.AddScoped<MeetingTypeRepository>();
 builder.Services.AddScoped<PlaceRepository>();
 builder.Services.AddScoped<PreferenceRepository>();

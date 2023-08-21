@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WeWell.Models.Meetings;
@@ -11,13 +12,15 @@ namespace WeWell.Controllers;
 public class MeetingsController : ControllerBase
 {
     private readonly IMapper _mapper;
+    private readonly MeetingService _service;
 
-    public MeetingsController(IMapper mapper)
+    public MeetingsController(IMapper mapper, MeetingService service)
     {
         _mapper = mapper;
+        _service = service;
     }
 
-    /*[HttpPost]
+    [HttpPost]
     [ProducesResponseType(typeof(int?), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Create a new meeting")]
@@ -25,12 +28,13 @@ public class MeetingsController : ControllerBase
     {
         try
         {
-            var meetingDto = _mapper.Map<Domain.DTO.Meeting>(meeting);
-            return Ok(meetingDto);
+            var meetingDto = _mapper.Map<Domain.DataTransferObjects.Meeting>(meeting);
+            await _service.CreateAsync(meetingDto);
+            return Ok();
         }
         catch (Exception ex)
         {
             return StatusCode(500, ex.Message);
         }
-    }*/
+    }
 }

@@ -56,4 +56,26 @@ public class PlaceRepository : IRepository<Place>
             await _context.SaveChangesAsync();
         }
     }
+    
+    public async Task<Place>? GetByForMeetingCreate(List<Preference> preferences, int minPrice, int maxPrice, int minDuration, int maxDuration, int meetingTypeId)
+    {
+        var places = await _context.Places
+            .Where(place =>
+                (place.MinPrice >= minPrice && place.MaxPrice <= maxPrice) &&
+                (place.MinDurationHours >= minDuration && place.MaxDurationHours <= maxDuration) &&
+                (place.MeetingTypes.Any(mt => mt.Id == meetingTypeId)) &&
+                (place.Preferences.All(p => preferences.Contains(p)))
+            )
+            .ToListAsync();
+
+        if (places.Count == 0)
+        {
+            return null;
+        }
+
+        var random = new Random();
+        var randomIndex = random.Next(0, places.Count);
+
+        return places[randomIndex];
+    }
 }
