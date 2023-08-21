@@ -162,7 +162,7 @@ namespace WeWell.Controllers
             }
         }
         
-        [HttpGet("phone/{phoneNumber}")]
+        [HttpGet("phones/{phoneNumber}")]
         [ProducesResponseType(typeof(UserGet), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Get a user by phoneNumber")]
@@ -186,7 +186,7 @@ namespace WeWell.Controllers
             }
         }
 
-        [HttpPost("phone")]
+        [HttpPost("phones")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Send SMS to phone number")]
@@ -204,7 +204,7 @@ namespace WeWell.Controllers
             }
         }
         
-        [HttpGet("phone/check/{phoneNumber}")]
+        [HttpGet("check/{phoneNumber}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Check a user by phoneNumber")]
