@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.DataTransferObjects;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -196,6 +197,23 @@ namespace WeWell.Controllers
                 string code = _userService.SendSms(phone.PhoneNumber);
 
                 return Ok(code);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        
+        [HttpGet("phone/check/{phoneNumber}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        [SwaggerOperation("Check a user by phoneNumber")]
+        public async Task<ActionResult<bool>> CheckUserByPhoneNumber(string phoneNumber)
+        {
+            try
+            {
+                User? userDto = await _userService.GetByPhoneNumberAsync(phoneNumber);
+                return userDto != null ?  Ok(true) :  Ok(false);
             }
             catch (Exception ex)
             {
