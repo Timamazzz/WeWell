@@ -2,7 +2,7 @@
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using WeWell.Models;
+using WeWell.Models.Meetings;
 
 namespace WeWell.Controllers;
 
@@ -20,14 +20,16 @@ public class MeetingStatusController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<MeetingStatus>), 200)]
+    [ProducesResponseType(typeof(List<string>), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get all meeting statuses")]
-    public async Task<ActionResult<List<MeetingStatus>>> GetAll()
+    public async Task<ActionResult<List<string>>> GetAll()
     {
         try
         {
-            var meetingStatuses = _service.GetAllAsync();
+            var meetingStatuses = Enum.GetNames(typeof(Domain.DataTransferObjects.MeetingStatus))
+                .Select(status => status.ToString())
+                .ToList();
             return Ok(meetingStatuses);
         }
         catch (Exception ex)

@@ -23,6 +23,7 @@ builder.Services.AddScoped<TimeSpanStringConverter>();
 //Services
 builder.Services.AddScoped<PreferenceService>();
 builder.Services.AddScoped<MeetingTypeService>();
+builder.Services.AddScoped<MeetingStatusService>();
 builder.Services.AddScoped<MeetingService>();
 builder.Services.AddScoped<PlaceService>();
 builder.Services.AddScoped<UserService>();

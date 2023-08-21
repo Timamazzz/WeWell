@@ -22,7 +22,6 @@ public class AppMappingDtoToPresentationModelsProfile : Profile
     {
         
         var imageResolver = new ImageResolver(new HttpContextAccessor());
-        CreateMap<Domain.DataTransferObjects.MeetingStatus, Models.MeetingStatus>().ReverseMap();
         CreateMap<Domain.DataTransferObjects.MeetingType, Models.MeetingType>().ReverseMap();
         CreateMap<Domain.DataTransferObjects.Preference, Models.Preference>().ReverseMap();
         //Users
