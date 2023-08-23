@@ -36,6 +36,9 @@ namespace DataAccess.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime>("DateTimeEnd")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("GuestId")
                         .HasColumnType("integer");
 
