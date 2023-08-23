@@ -92,7 +92,7 @@ namespace WeWell.Controllers
         {
             try
             {
-                Domain.DataTransferObjects.User userDto = _mapper.Map<Domain.DataTransferObjects.User>(user);
+                User userDto = _mapper.Map<User>(user);
                 await _userService.UpdateAsync(userDto);
 
                 return Ok();

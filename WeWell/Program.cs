@@ -17,7 +17,6 @@ builder.Services.AddDbContext<ApplicationContext>(options => options.UseNpgsql(c
 
 //Mapping
 builder.Services.AddAutoMapper(typeof(AppMappingDtoToDataAccessModelsProfile), typeof(AppMappingDtoToPresentationModelsProfile));
-builder.Services.AddScoped<TimeSpanStringConverter>();
 
 
 //Services
@@ -47,6 +46,8 @@ builder.Services.AddLogging(builder =>
 {
     builder.AddConsole(); // Добавьте провайдеры логирования по вашему выбору
 });
+
+builder.Services.AddHostedService<MeetingArchiveService>();
 
 // Enable CORS
 builder.Services.AddCors(options =>

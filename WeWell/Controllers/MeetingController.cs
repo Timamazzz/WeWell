@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.DataTransferObjects;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -49,6 +50,43 @@ public class MeetingsController : ControllerBase
             var meetingsDto = await _service.GetAllAsync();
             var meetings = _mapper.Map<List<MeetingGet>>(meetingsDto);
             return Ok(meetings);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+    
+    [HttpGet("user/{userId}")]
+    [ProducesResponseType(typeof(List<MeetingGet>), 200)]
+    [ProducesResponseType(typeof(string), 500)]
+    [SwaggerOperation("Get meetings of a specific user")]
+    public async Task<ActionResult<List<MeetingGet>>> GetUserMeetings(int userId)
+    {
+        try
+        {
+            var meetingsDto = await _service.GetMeetingsByUserIdAsync(userId);
+            var meetings = _mapper.Map<List<MeetingGet>>(meetingsDto);
+            return Ok(meetings);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(string), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(typeof(string), 500)]
+    [SwaggerOperation("Update a meeting")]
+    public async Task<ActionResult<string>> UpdateMeeting(MeetingUpdate meetingUpdate)
+    {
+        try
+        {
+            Meeting meetingDto = _mapper.Map<Meeting>(meetingUpdate);
+            await _service.UpdateAsync(meetingDto);
+
+            return Ok("Meeting updated successfully");
         }
         catch (Exception ex)
         {

@@ -54,6 +54,7 @@ public class MeetingService : IService<Meeting>
         entity.Creator = await _userRepository.GetByIdAsync(meeting.CreatorId);
         entity.Guest = await _userRepository.GetByIdAsync(meeting.GuestId);
         entity.Type = await _meetingTypeRepository.GetByIdAsync(meeting.Type.Id);
+        entity.DateTimeEnd = meeting.Date.AddHours((double)meeting.MaxDurationHours);
         int? id = await _repository.CreateAsync(entity);
         
         return id;
@@ -73,13 +74,37 @@ public class MeetingService : IService<Meeting>
         Meeting? meeting = _mapper.Map<Meeting>(entity);
         return meeting;
     }
-
+    
+    public async Task<List<Meeting>?> GetMeetingsByUserIdAsync(int userId)
+    {
+        List<DataAccess.Models.Meeting>? entities = await _repository.GetMeetingsByUserIdAsync(userId);
+        
+        List<Meeting>? meetings = _mapper.Map<List<Meeting>>(entities);
+        
+        return meetings;
+    }
+    
     public async Task UpdateAsync(Meeting meeting)
     {
-        DataAccess.Models.Meeting entity = _mapper.Map<DataAccess.Models.Meeting>(meeting);
+        DataAccess.Models.Meeting entity = await _repository.GetByIdAsync(meeting.Id);
+        
+        entity.IsActive = meeting.IsActive;
+        entity.IsShowForCreator = meeting.IsShowForCreator;
+        entity.IsShowForGuest = meeting.IsShowForGuest;
+        
+        if (Enum.TryParse<MeetingStatus>(meeting.Status, out var parsedStatus))
+        {
+            entity.Status = parsedStatus.ToString();
+        }
+        
         await _repository.UpdateAsync(entity);
     }
-
+    
+    public async Task DeleteAsync(int id)
+    {
+        await _repository.DeleteAsync(id);
+    }
+    
     private async Task<List<Preference>>? GetPreferences(User? creator, User? guest)
     {
         if (creator.IsAllPreferences == true && guest.IsAllPreferences == true)
@@ -108,11 +133,6 @@ public class MeetingService : IService<Meeting>
             return commonPreferences;
         }
     }
-
-    public async Task DeleteAsync(int id)
-    {
-        await _repository.DeleteAsync(id);
-    }
     
     private async Task<int?> FindSuitablePlace(List<Preference> preferences, int maxPrice, int maxDuration, int meetingTypeId)
     {
@@ -127,5 +147,4 @@ public class MeetingService : IService<Meeting>
             return null;
         }
     }
-
 }

@@ -3,19 +3,6 @@ using System.Globalization;
 
 namespace WeWell.AutoMapper;
 
-public class TimeSpanStringConverter : IValueConverter<string, TimeSpan?>
-{
-    public TimeSpan? Convert(string sourceMember, ResolutionContext context)
-    {
-        if (TimeSpan.TryParseExact(sourceMember, @"hh\:mm", CultureInfo.InvariantCulture, out TimeSpan result))
-        {
-            return result;
-        }
-        return null;
-    }
-}
-
-
 public class AppMappingDtoToPresentationModelsProfile : Profile
 {
     public AppMappingDtoToPresentationModelsProfile()
@@ -40,5 +27,6 @@ public class AppMappingDtoToPresentationModelsProfile : Profile
             .ReverseMap();
         CreateMap<Domain.DataTransferObjects.Meeting, Models.Meetings.MeetingCreate>().ReverseMap();
         CreateMap<Domain.DataTransferObjects.Meeting, Models.Meetings.MeetingGet>().ReverseMap();
+        CreateMap<Domain.DataTransferObjects.Meeting, Models.Meetings.MeetingUpdate>().ReverseMap();
     }
 }

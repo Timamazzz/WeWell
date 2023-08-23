@@ -12,6 +12,7 @@ public class Meeting
     public User? Guest { get; set; }
     [Required]
     public DateTime Date { get; set; }
+    public DateTime DateTimeEnd { get; set; }
     [Required]
     public int? MinPrice { get; set; }
     [Required]

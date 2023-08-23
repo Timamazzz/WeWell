@@ -39,6 +39,20 @@ public class MeetingRepository : IRepository<Meeting>
         return meeting;
     }
 
+    public async Task<List<Meeting>?> GetMeetingsByUserIdAsync(int userId)
+    {
+        List<Meeting> meetings = await _context.Meetings
+            .Where(meeting => (meeting.Creator.Id == userId || meeting.Guest.Id == userId) && meeting.IsActive == true)
+            .Include(m => m.Creator)
+            .Include(m => m.Guest)
+            .Include(m => m.Place)
+            .Include(m => m.Type)
+            .OrderBy(meeting => meeting.Id)
+            .ToListAsync();
+
+        return meetings;
+    }
+    
     public async Task UpdateAsync(Meeting meeting)
     {
         _context.Update(meeting);

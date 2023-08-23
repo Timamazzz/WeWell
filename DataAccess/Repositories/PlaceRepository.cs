@@ -69,7 +69,12 @@ public class PlaceRepository : IRepository<Place>
         
         if (places.Count == 0)
         {
-            return null;
+            places = await _context.Places
+                .Where(place =>
+                    (place.MaxPrice <= maxPrice) &&
+                    (place.MaxDurationHours <= maxDuration) &&
+                    (place.MeetingTypes.Any(mt => mt.Id == meetingTypeId)))
+                .ToListAsync();
         }
 
         var random = new Random();
