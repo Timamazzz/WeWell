@@ -8,6 +8,7 @@ public class Place
     public int Id { get; set; }
     [Required]
     public string? Name { get; set; }
+    public string? Description { get; set; }
     [Required]
     public string? Address { get; set; }
     public string? ImagePath { get; set; }
@@ -22,4 +23,5 @@ public class Place
     public List<Meeting>? Meetings { get; set; }
     public List<Preference>? Preferences { get; set; }
     public List<MeetingType>? MeetingTypes { get; set; }
+    
 }
