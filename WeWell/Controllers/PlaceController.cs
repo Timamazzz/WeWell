@@ -207,39 +207,42 @@ public class PlacesController : ControllerBase
 
             for (var row = 2; row <= worksheet.Dimension.Rows; row++)
             {
-                var place = new PlacesExcel
+                if (!string.IsNullOrWhiteSpace(worksheet.Cells[row, columns.Name]?.Value?.ToString()))
                 {
-                    Name = worksheet.Cells[row, columns.Name]?.Value?.ToString(),
-                    Description = worksheet.Cells[row, columns.Description]?.Value?.ToString(),
-                    Address = worksheet.Cells[row, columns.Address]?.Value?.ToString(),
-                    MinPrice = int.TryParse(worksheet.Cells[row, columns.MinPrice]?.Value?.ToString(), out var minPrice) ? minPrice : null,
-                    MaxPrice = int.TryParse(worksheet.Cells[row, columns.MaxPrice]?.Value?.ToString(), out var maxPrice) ? maxPrice : null,
-                    MinDurationHours = int.TryParse(worksheet.Cells[row, columns.MinDurationHours]?.Value?.ToString(), out var minDuration) ? minDuration : null,
-                    MaxDurationHours = int.TryParse(worksheet.Cells[row, columns.MaxDurationHours]?.Value?.ToString(), out var maxDuration) ? maxDuration : null,
-                };
-
-                var preferencesIdString = worksheet.Cells[row, columns.PreferencesId]?.Value?.ToString();
-                if (!string.IsNullOrEmpty(preferencesIdString))
-                {
-                    var preferenceIds = preferencesIdString.Split(',').Select(p => 
+                    var place = new PlacesExcel
                     {
-                        if (int.TryParse(p, out var preferenceId))
+                        Name = worksheet.Cells[row, columns.Name]?.Value?.ToString(),
+                        Description = worksheet.Cells[row, columns.Description]?.Value?.ToString(),
+                        Address = worksheet.Cells[row, columns.Address]?.Value?.ToString(),
+                        MinPrice = int.TryParse(worksheet.Cells[row, columns.MinPrice]?.Value?.ToString(), out var minPrice) ? minPrice : null,
+                        MaxPrice = int.TryParse(worksheet.Cells[row, columns.MaxPrice]?.Value?.ToString(), out var maxPrice) ? maxPrice : null,
+                        MinDurationHours = int.TryParse(worksheet.Cells[row, columns.MinDurationHours]?.Value?.ToString(), out var minDuration) ? minDuration : null,
+                        MaxDurationHours = int.TryParse(worksheet.Cells[row, columns.MaxDurationHours]?.Value?.ToString(), out var maxDuration) ? maxDuration : null,
+                    };
+
+                    var preferencesIdString = worksheet.Cells[row, columns.PreferencesId]?.Value?.ToString();
+                    if (!string.IsNullOrEmpty(preferencesIdString))
+                    {
+                        var preferenceIds = preferencesIdString.Split(',').Select(p => 
                         {
-                            return preferenceId;
-                        }
-                        return 0;
-                    }).Where(p => p != 0).ToList();
+                            if (int.TryParse(p, out var preferenceId))
+                            {
+                                return preferenceId;
+                            }
+                            return 0;
+                        }).Where(p => p != 0).ToList();
 
-                    place.PreferencesId = preferenceIds;
+                        place.PreferencesId = preferenceIds;
+                    }
+
+                    var meetingTypesIdString = worksheet.Cells[row, columns.MeetingTypesId]?.Value?.ToString();
+                    if (!string.IsNullOrEmpty(meetingTypesIdString))
+                    {
+                        place.MeetingTypesId = meetingTypesIdString.Split(',').Select(int.Parse).ToList();
+                    }
+
+                    places.Add(place);
                 }
-
-                /*var meetingTypesIdString = worksheet.Cells[row, columns.MeetingTypesId]?.Value?.ToString();
-                if (!string.IsNullOrEmpty(meetingTypesIdString))
-                {
-                    place.MeetingTypesId = meetingTypesIdString.Split(',').Select(int.Parse).ToList();
-                }*/
-
-                places.Add(place);
             }
 
             return Ok(places);
