@@ -221,7 +221,16 @@ public class PlacesController : ControllerBase
                 var preferencesIdString = worksheet.Cells[row, columns.PreferencesId]?.Value?.ToString();
                 if (!string.IsNullOrEmpty(preferencesIdString))
                 {
-                    place.PreferencesId = preferencesIdString.Split(',').Select(int.Parse).ToList();
+                    var preferenceIds = preferencesIdString.Split(',').Select(p => 
+                    {
+                        if (int.TryParse(p, out var preferenceId))
+                        {
+                            return preferenceId;
+                        }
+                        return 0;
+                    }).Where(p => p != 0).ToList();
+
+                    place.PreferencesId = preferenceIds;
                 }
 
                 /*var meetingTypesIdString = worksheet.Cells[row, columns.MeetingTypesId]?.Value?.ToString();
