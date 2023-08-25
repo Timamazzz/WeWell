@@ -218,13 +218,13 @@ public class PlacesController : ControllerBase
                     MaxDurationHours = int.TryParse(worksheet.Cells[row, columns.MaxDurationHours]?.Value?.ToString(), out var maxDuration) ? maxDuration : null,
                 };
 
-                /*var preferencesIdString = worksheet.Cells[row, columns.PreferencesId]?.Value?.ToString();
+                var preferencesIdString = worksheet.Cells[row, columns.PreferencesId]?.Value?.ToString();
                 if (!string.IsNullOrEmpty(preferencesIdString))
                 {
                     place.PreferencesId = preferencesIdString.Split(',').Select(int.Parse).ToList();
                 }
 
-                var meetingTypesIdString = worksheet.Cells[row, columns.MeetingTypesId]?.Value?.ToString();
+                /*var meetingTypesIdString = worksheet.Cells[row, columns.MeetingTypesId]?.Value?.ToString();
                 if (!string.IsNullOrEmpty(meetingTypesIdString))
                 {
                     place.MeetingTypesId = meetingTypesIdString.Split(',').Select(int.Parse).ToList();
