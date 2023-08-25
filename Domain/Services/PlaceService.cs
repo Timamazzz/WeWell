@@ -36,6 +36,18 @@ public class PlaceService : IService<Place>
 
         return id;
     }
+    
+    public async Task<int?> CreateListAsync(List<Place?>? places)
+    {
+        var listId = new List<int?>();
+        
+        foreach (var place in places)
+        {
+            listId.Add(await CreateAsync(place));
+        }
+
+        return listId.Count;
+    }
 
     public async Task<List<Place>?> GetAllAsync()
     {

@@ -190,7 +190,7 @@ public class PlacesController : ControllerBase
                 return BadRequest("The Excel file is empty or has no worksheets.");
             }
 
-            var places = new List<PlacesExcel>();
+            var places = new List<PlaceCreate>();
 
             var columns = new
             {
@@ -209,7 +209,10 @@ public class PlacesController : ControllerBase
             {
                 if (!string.IsNullOrWhiteSpace(worksheet.Cells[row, columns.Name]?.Value?.ToString()))
                 {
-                    var place = new PlacesExcel
+                    var preferenceIdsString = worksheet.Cells[row, columns.PreferencesId]?.Value?.ToString();
+                    var meetingTypesIdString = worksheet.Cells[row, columns.MeetingTypesId]?.Value?.ToString();
+
+                    var place = new PlaceCreate
                     {
                         Name = worksheet.Cells[row, columns.Name]?.Value?.ToString(),
                         Description = worksheet.Cells[row, columns.Description]?.Value?.ToString(),
@@ -218,37 +221,9 @@ public class PlacesController : ControllerBase
                         MaxPrice = int.TryParse(worksheet.Cells[row, columns.MaxPrice]?.Value?.ToString(), out var maxPrice) ? maxPrice : null,
                         MinDurationHours = int.TryParse(worksheet.Cells[row, columns.MinDurationHours]?.Value?.ToString(), out var minDuration) ? minDuration : null,
                         MaxDurationHours = int.TryParse(worksheet.Cells[row, columns.MaxDurationHours]?.Value?.ToString(), out var maxDuration) ? maxDuration : null,
+                        Preferences = ConvertPreferenceIdsToObjects(ParseIds(preferenceIdsString)),
+                        MeetingTypes = ConvertMeetingTypeIdsToObjects(ParseIds(meetingTypesIdString))
                     };
-
-                    var preferencesIdString = worksheet.Cells[row, columns.PreferencesId]?.Value?.ToString();
-                    if (!string.IsNullOrEmpty(preferencesIdString))
-                    {
-                        var preferenceIds = preferencesIdString.Split(',').Select(p => 
-                        {
-                            if (int.TryParse(p, out var preferenceId))
-                            {
-                                return preferenceId;
-                            }
-                            return 0;
-                        }).Where(p => p != 0).ToList();
-
-                        place.PreferencesId = preferenceIds;
-                    }
-
-                    var meetingTypesIdString = worksheet.Cells[row, columns.MeetingTypesId]?.Value?.ToString();
-                    if (!string.IsNullOrEmpty(meetingTypesIdString))
-                    {
-                        var meetingTypesId = meetingTypesIdString.Split(',').Select(p => 
-                        {
-                            if (int.TryParse(p, out var preferenceId))
-                            {
-                                return preferenceId;
-                            }
-                            return 0;
-                        }).Where(p => p != 0).ToList();
-
-                        place.MeetingTypesId = meetingTypesId;
-                    }
 
                     places.Add(place);
                 }
@@ -260,5 +235,42 @@ public class PlacesController : ControllerBase
         {
             return StatusCode(500, ex.Message);
         }
+    }
+
+    private List<int> ParseIds(string? idsString)
+    {
+        if (!string.IsNullOrEmpty(idsString))
+        {
+            return idsString.Split(',').Select(idStr =>
+            {
+                if (int.TryParse(idStr, out var id))
+                {
+                    return id;
+                }
+                return 0;
+            }).Where(id => id != 0).ToList();
+        }
+        return new List<int>();
+    }
+    
+    private List<Preference> ConvertPreferenceIdsToObjects(List<int> preferenceIds)
+    {
+        var preferences = new List<Preference>();
+        foreach (var preferenceId in preferenceIds)
+        {
+            var preference = new Preference { Id = preferenceId };
+            preferences.Add(preference);
+        }
+        return preferences;
+    }
+    private List<MeetingType> ConvertMeetingTypeIdsToObjects(List<int> meetingTypeIds)
+    {
+        var meetingTypes = new List<MeetingType>();
+        foreach (var meetingTypeId in meetingTypeIds)
+        {
+            var meetingType = new MeetingType { Id = meetingTypeId };
+            meetingTypes.Add(meetingType);
+        }
+        return meetingTypes;
     }
 }
