@@ -6,9 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using WeWell.AutoMapper;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
+using OfficeOpenXml;
 using WeWell.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
 

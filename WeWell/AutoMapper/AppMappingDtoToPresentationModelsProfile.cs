@@ -19,6 +19,7 @@ public class AppMappingDtoToPresentationModelsProfile : Profile
             .ForMember(dest => dest.AvatarPath, opt => opt.MapFrom(src => src.AvatarPath))
             .ReverseMap();
         CreateMap<Domain.DataTransferObjects.Place, Models.Places.PlaceCreate>().ReverseMap();
+        CreateMap<Domain.DataTransferObjects.Place, Models.Places.PlacesExcel>().ReverseMap();
         CreateMap<Domain.DataTransferObjects.Place, Models.Places.PlaceUpdate>().ReverseMap();
         CreateMap<Domain.DataTransferObjects.Place, Models.Places.PlaceGet>()
             .ForMember(dest => dest.Url,
