@@ -12,7 +12,5 @@ public class Place
     public int? MinDurationHours { get; set; }
     public int? MaxDurationHours { get; set; }
     public List<Preference>? Preferences { get; set; }
-    public List<int?>? PreferencesId { get; set; }
     public List<MeetingType>? MeetingTypes { get; set; }
-    public List<int?>? MeetingTypesId { get; set; }
 }

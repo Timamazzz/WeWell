@@ -37,7 +37,7 @@ public class PlaceService : IService<Place>
         return id;
     }
     
-    public async Task<int?> CreateListAsync(List<Place?>? places)
+    public async Task<int?> CreateListAsync(List<Place> places)
     {
         var listId = new List<int?>();
         

@@ -229,7 +229,8 @@ public class PlacesController : ControllerBase
                 }
             }
 
-            return Ok(places);
+            var countId = await _service.CreateListAsync(_mapper.Map<List<Domain.DataTransferObjects.Place>>(places));
+            return Ok(countId);
         }
         catch (Exception ex)
         {
