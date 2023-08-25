@@ -207,16 +207,27 @@ public class PlacesController : ControllerBase
 
             for (var row = 2; row <= worksheet.Dimension.Rows; row++)
             {
-                var place = new PlacesExcel
-                {
-                    Name = worksheet.Cells[row, columns.Name]?.Value?.ToString(),
-                    Description = worksheet.Cells[row, columns.Description]?.Value?.ToString(),
-                    Address = worksheet.Cells[row, columns.Address]?.Value?.ToString(),
-                    MinPrice = int.TryParse(worksheet.Cells[row, columns.MinPrice]?.Value?.ToString(), out var minPrice) ? minPrice : null,
-                    MaxPrice = int.TryParse(worksheet.Cells[row, columns.MaxPrice]?.Value?.ToString(), out var maxPrice) ? maxPrice : null,
-                    MinDurationHours = int.TryParse(worksheet.Cells[row, columns.MinDurationHours]?.Value?.ToString(), out var minDuration) ? minDuration : null,
-                    MaxDurationHours = int.TryParse(worksheet.Cells[row, columns.MaxDurationHours]?.Value?.ToString(), out var maxDuration) ? maxDuration : null,
-                };
+                var place = new PlacesExcel();
+
+                place.Name = worksheet.Cells[row, columns.Name]?.Value?.ToString();
+                place.Description = worksheet.Cells[row, columns.Description]?.Value?.ToString();
+                place.Address = worksheet.Cells[row, columns.Address]?.Value?.ToString();
+                place.MinPrice =
+                    int.TryParse(worksheet.Cells[row, columns.MinPrice]?.Value?.ToString(), out var minPrice)
+                        ? minPrice
+                        : null;
+                place.MaxPrice =
+                    int.TryParse(worksheet.Cells[row, columns.MaxPrice]?.Value?.ToString(), out var maxPrice)
+                        ? maxPrice
+                        : null;
+                place.MinDurationHours =
+                    int.TryParse(worksheet.Cells[row, columns.MinDurationHours]?.Value?.ToString(), out var minDuration)
+                        ? minDuration
+                        : null;
+                place.MaxDurationHours =
+                    int.TryParse(worksheet.Cells[row, columns.MaxDurationHours]?.Value?.ToString(), out var maxDuration)
+                        ? maxDuration
+                        : null;
 
                 var preferencesIdString = worksheet.Cells[row, columns.PreferencesId]?.Value?.ToString();
                 if (!string.IsNullOrEmpty(preferencesIdString))
