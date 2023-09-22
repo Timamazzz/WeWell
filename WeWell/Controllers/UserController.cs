@@ -42,6 +42,64 @@ namespace WeWell.Controllers
             }
         }
 
+        [HttpPost("register")]
+        [ProducesResponseType(typeof(int?), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        [SwaggerOperation("Register a new user")]
+        public async Task<ActionResult<int?>> RegisterUser(UserCreate user)
+        {
+            try
+            {
+                var userDto = _mapper.Map<Domain.DataTransferObjects.User>(user);
+                int? userId = await _userService.RegisterAsync(userDto);
+
+                if (userId == null)
+                {
+                    return BadRequest("User with the same phone number already exists.");
+                }
+
+                return Ok(userId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 401)]
+        [ProducesResponseType(typeof(string), 500)]
+        [SwaggerOperation("Authenticate a user")]
+        public async Task<ActionResult<UserGet>> AuthenticateUser(UserAuth user)
+        {
+            try
+            {
+                var userDto = await _userService.GetByPhoneNumberAsync(user.PhoneNumber);
+
+                if (userDto == null)
+                {
+                    return Unauthorized("User not found");
+                }
+
+                var isAuthenticated = await _userService.AuthenticateUserAsync(userDto, user.Password) != null;
+
+                if (isAuthenticated)
+                {
+
+                    return Ok(userDto);
+                }
+                else
+                {
+                    return Unauthorized("Invalid password");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        
         [HttpGet]
         [ProducesResponseType(typeof(List<UserGet>), 200)]
         [ProducesResponseType(typeof(string), 500)]

@@ -10,6 +10,7 @@ public class User
     public string? Name { get; set; }
     [Required]
     public string? PhoneNumber { get; set; }
+    public string? Password { get; set; }
     public string? AvatarPath { get; set; }
     [Required]
     public bool? IsAllPreferences { get; set; }

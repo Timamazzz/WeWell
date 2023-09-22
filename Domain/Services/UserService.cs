@@ -2,6 +2,7 @@
 using DataAccess.Repositories;
 using Domain.DataTransferObjects;
 using Domain.Interfaces;
+using BCrypt.Net;
 
 namespace Domain.Services;
 
@@ -32,6 +33,31 @@ public class UserService : IService<User>
         return id;
     }
 
+    public async Task<int?> RegisterAsync(User user)
+    {
+        var existingUser = await GetByPhoneNumberAsync(user.PhoneNumber);
+        if (existingUser != null)
+        {
+            return null;
+        }
+
+        user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+        int? id = await CreateAsync(user);
+        return id;
+    }
+    
+    public async Task<User?> AuthenticateUserAsync(User user, string authPassword)
+    {
+        if (BCrypt.Net.BCrypt.Verify(authPassword, user.Password))
+        {
+            return user;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
     public async Task<List<User>?> GetAllAsync()
     {
         List<DataAccess.Models.User>? entities = await _repository.GetAllAsync();
@@ -75,4 +101,5 @@ public class UserService : IService<User>
         string code = _smsService.SendSms(phoneNumber);
         return code;
     }
+    
 }
