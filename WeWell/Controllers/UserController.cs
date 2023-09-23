@@ -74,7 +74,7 @@ namespace WeWell.Controllers
                     issuer: jwtIssuer,
                     audience: jwtIssuer,
                     claims: claims,
-                    expires: DateTime.UtcNow.Add(TimeSpan.FromDays(7)),
+                    expires: DateTime.UtcNow.Add(TimeSpan.FromDays(31)),
                     signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)), SecurityAlgorithms.HmacSha256)
                 );
 
@@ -119,7 +119,7 @@ namespace WeWell.Controllers
                         issuer: AuthOptions.ISSUER,
                         audience: AuthOptions.AUDIENCE,
                         claims: claims,
-                        expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),
+                        expires: DateTime.UtcNow.Add(TimeSpan.FromDays(31)),
                         signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
             
                     var token = new JwtSecurityTokenHandler().WriteToken(jwt);
