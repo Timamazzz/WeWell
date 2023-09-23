@@ -3,6 +3,7 @@ using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WeWell.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WeWell.Controllers;
 
@@ -20,6 +21,7 @@ public class PreferenceController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(int?), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Create a new preference")]
@@ -38,6 +40,7 @@ public class PreferenceController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(typeof(List<Preference>), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get all preferences")]
@@ -56,6 +59,7 @@ public class PreferenceController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     [ProducesResponseType(typeof(Preference), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get a preference by ID")]
@@ -80,6 +84,7 @@ public class PreferenceController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize]
     [ProducesResponseType(typeof(void), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Update a preference")]
@@ -99,6 +104,7 @@ public class PreferenceController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     [ProducesResponseType(typeof(void), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Delete a preference by ID")]

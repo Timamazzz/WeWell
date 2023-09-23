@@ -6,6 +6,11 @@ using Swashbuckle.AspNetCore.Annotations;
 using WeWell.Models;
 using WeWell.Models.Users;
 using WeWell.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using System.Text;
 
 namespace WeWell.Controllers
 {
@@ -16,15 +21,18 @@ namespace WeWell.Controllers
         private readonly UserService _userService;
         private readonly IMapper _mapper;
         private readonly ImageService _imageService;
+        private readonly IConfiguration _configuration;
 
-        public UserController(UserService userService, IMapper mapper, ImageService imageService)
+        public UserController(UserService userService, IMapper mapper, ImageService imageService, IConfiguration configuration)
         {
             _userService = userService;
             _mapper = mapper;
             _imageService = imageService;
+            _configuration = configuration;
         }
 
         [HttpPost]
+        [Authorize]
         [ProducesResponseType(typeof(int?), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Create a new user")]
@@ -58,7 +66,27 @@ namespace WeWell.Controllers
                     return BadRequest("User with the same phone number already exists.");
                 }
 
-                return Ok(userId);
+                var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.PhoneNumber) };
+                var jwtIssuer = _configuration["JwtAuth:Issuer"];
+                var jwtKey = _configuration["JwtAuth:Key"];
+
+                var jwt = new JwtSecurityToken(
+                    issuer: jwtIssuer,
+                    audience: jwtIssuer,
+                    claims: claims,
+                    expires: DateTime.UtcNow.Add(TimeSpan.FromDays(7)),
+                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)), SecurityAlgorithms.HmacSha256)
+                );
+
+                var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+                
+                var authenticatedUser = new
+                {
+                    Token = "Bearer " + token,
+                    User = _mapper.Map<UserGet>(userDto) 
+                };
+
+                return Ok(authenticatedUser);
             }
             catch (Exception ex)
             {
@@ -86,8 +114,23 @@ namespace WeWell.Controllers
 
                 if (isAuthenticated)
                 {
+                    var claims = new List<Claim> {new Claim(ClaimTypes.Name, user.PhoneNumber) };
+                    var jwt = new JwtSecurityToken(
+                        issuer: AuthOptions.ISSUER,
+                        audience: AuthOptions.AUDIENCE,
+                        claims: claims,
+                        expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),
+                        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            
+                    var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-                    return Ok(userDto);
+                    var authenticatedUser = new
+                    {
+                        Token = "Bearer " + token,
+                        User = _mapper.Map<UserGet>(userDto)
+                    };
+
+                    return Ok(authenticatedUser);
                 }
                 else
                 {
@@ -101,9 +144,10 @@ namespace WeWell.Controllers
         }
         
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(typeof(List<UserGet>), 200)]
         [ProducesResponseType(typeof(string), 500)]
-        [SwaggerOperation("Get all users")]
+        [SwaggerOperation("Get all users", OperationId = "GetAllUsers")]
         public async Task<ActionResult<List<UserGet>>> GetAllUsers()
         {
             try
@@ -119,6 +163,7 @@ namespace WeWell.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(typeof(UserGet), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Get a user by ID")]
@@ -143,6 +188,7 @@ namespace WeWell.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [ProducesResponseType(typeof(void), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Update a user")]
@@ -162,6 +208,7 @@ namespace WeWell.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         [ProducesResponseType(typeof(void), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Delete a user by ID")]
@@ -187,6 +234,7 @@ namespace WeWell.Controllers
         }
 
         [HttpPut("avatars")]
+        [Authorize]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Update Avatar User")]
@@ -221,6 +269,7 @@ namespace WeWell.Controllers
         }
         
         [HttpGet("phones/{phoneNumber}")]
+        [Authorize]
         [ProducesResponseType(typeof(UserGet), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Get a user by phoneNumber")]
@@ -245,6 +294,7 @@ namespace WeWell.Controllers
         }
 
         [HttpPost("phones")]
+        [Authorize]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Send SMS to phone number")]
@@ -263,6 +313,7 @@ namespace WeWell.Controllers
         }
         
         [HttpGet("check/{phoneNumber}")]
+        [Authorize]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Check a user by phoneNumber")]

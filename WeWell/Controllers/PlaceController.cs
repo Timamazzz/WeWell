@@ -6,6 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using WeWell.Models;
 using WeWell.Models.Places;
 using WeWell.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WeWell.Controllers;
 
@@ -25,6 +26,7 @@ public class PlacesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(int?), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Create a new place")]
@@ -43,6 +45,7 @@ public class PlacesController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(typeof(List<PlaceGet>), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get all places")]
@@ -61,6 +64,7 @@ public class PlacesController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     [ProducesResponseType(typeof(PlaceGet), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get a place by ID")]
@@ -85,6 +89,7 @@ public class PlacesController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize]
     [ProducesResponseType(typeof(void), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Update a place")]
@@ -104,6 +109,7 @@ public class PlacesController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     [ProducesResponseType(typeof(void), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Delete a place by ID")]
@@ -129,6 +135,7 @@ public class PlacesController : ControllerBase
     }
     
     [HttpPut("images")]
+    [Authorize]
     [ProducesResponseType(typeof(string), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Update Image Place")]
@@ -163,6 +170,7 @@ public class PlacesController : ControllerBase
     }
     
     [HttpPost("excel")]
+    [Authorize]
     [ProducesResponseType(typeof(string), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Create Places with excel file")]

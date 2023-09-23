@@ -4,6 +4,7 @@ using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WeWell.Models.Meetings;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WeWell.Controllers;
 
@@ -22,6 +23,7 @@ public class MeetingsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(int?), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Create a new meeting")]
@@ -40,6 +42,7 @@ public class MeetingsController : ControllerBase
     }
     
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(typeof(List<MeetingGet>), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get all meetings")]
@@ -58,6 +61,7 @@ public class MeetingsController : ControllerBase
     }
     
     [HttpGet("user/{userId}")]
+    [Authorize]
     [ProducesResponseType(typeof(List<MeetingGet>), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get meetings of a specific user")]
@@ -75,6 +79,7 @@ public class MeetingsController : ControllerBase
         }
     }
     [HttpPut("{id}")]
+    [Authorize]
     [ProducesResponseType(typeof(string), 200)]
     [ProducesResponseType(typeof(string), 400)]
     [ProducesResponseType(typeof(string), 500)]

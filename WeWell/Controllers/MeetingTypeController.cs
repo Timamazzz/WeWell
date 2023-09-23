@@ -3,6 +3,7 @@ using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using WeWell.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WeWell.Controllers;
 
@@ -20,6 +21,7 @@ public class MeetingTypeController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(int?), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Create a new meeting type")]
@@ -38,6 +40,7 @@ public class MeetingTypeController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(typeof(List<MeetingType>), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get all meeting types")]
@@ -56,6 +59,7 @@ public class MeetingTypeController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     [ProducesResponseType(typeof(MeetingType), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get a meeting type by ID")]
@@ -80,6 +84,7 @@ public class MeetingTypeController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize]
     [ProducesResponseType(typeof(void), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Update a meeting type")]
@@ -99,6 +104,7 @@ public class MeetingTypeController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     [ProducesResponseType(typeof(void), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Delete a meeting type by ID")]

@@ -2,7 +2,7 @@
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using WeWell.Models.Meetings;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WeWell.Controllers;
 
@@ -20,6 +20,7 @@ public class MeetingStatusController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(typeof(List<string>), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get all meeting statuses")]
