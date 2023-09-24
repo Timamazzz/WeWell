@@ -108,7 +108,7 @@ namespace WeWell.Controllers
 
                 if (isAuthenticated)
                 {
-                    var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.PhoneNumber) };
+                    var claims = new List<Claim> { new Claim(ClaimTypes.MobilePhone, user.PhoneNumber) };
                 
                     var jwt = new JwtSecurityToken(
                         issuer: AuthOptions.ISSUER,
