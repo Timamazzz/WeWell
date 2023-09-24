@@ -58,7 +58,7 @@ namespace WeWell.Controllers
                 var userDto = _mapper.Map<Domain.DataTransferObjects.User>(user);
                 int? userId = await _userService.RegisterAsync(userDto);
 
-                if (userId == null)
+                if (userId != null)
                 {
                     return BadRequest("User with the same phone number already exists.");
                 }

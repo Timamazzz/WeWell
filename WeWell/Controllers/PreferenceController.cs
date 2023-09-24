@@ -40,7 +40,6 @@ public class PreferenceController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize]
     [ProducesResponseType(typeof(List<Preference>), 200)]
     [ProducesResponseType(typeof(string), 500)]
     [SwaggerOperation("Get all preferences")]
