@@ -207,7 +207,6 @@ namespace WeWell.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
         [ProducesResponseType(typeof(void), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Delete a user by ID")]
