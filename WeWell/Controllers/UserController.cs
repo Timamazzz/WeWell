@@ -63,7 +63,7 @@ namespace WeWell.Controllers
                     return BadRequest("User with the same phone number already exists.");
                 }
 
-                var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.PhoneNumber) };
+                var claims = new List<Claim> { new Claim("phone", "+7 919 174-17-90") };
                 
                 var jwt = new JwtSecurityToken(
                     issuer: AuthOptions.ISSUER,
@@ -108,7 +108,7 @@ namespace WeWell.Controllers
 
                 if (isAuthenticated)
                 {
-                    var claims = new List<Claim> { new Claim(ClaimTypes.MobilePhone, user.PhoneNumber) };
+                    var claims = new List<Claim> { new Claim("phone", "+7 919 174-17-90") };
                 
                     var jwt = new JwtSecurityToken(
                         issuer: AuthOptions.ISSUER,
