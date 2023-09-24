@@ -139,6 +139,7 @@ namespace WeWell.Controllers
         }
         
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(typeof(List<UserGet>), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Get all users", OperationId = "GetAllUsers")]
@@ -202,6 +203,7 @@ namespace WeWell.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         [ProducesResponseType(typeof(void), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Delete a user by ID")]
