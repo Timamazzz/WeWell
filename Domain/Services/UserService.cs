@@ -10,15 +10,13 @@ public class UserService : IService<User>
 {
     private readonly UserRepository _repository;
     private readonly PreferenceRepository _repositoryPreference;
-    private readonly SmsService _smsService;
     private readonly IMapper _mapper;
 
-    public UserService(UserRepository repository, PreferenceRepository repositoryPreference, IMapper mapper, SmsService smsService)
+    public UserService(UserRepository repository, PreferenceRepository repositoryPreference, IMapper mapper)
     {
         _repository = repository;
         _repositoryPreference = repositoryPreference;
         _mapper = mapper;
-        _smsService = smsService;
     }
 
     public async Task<int?> CreateAsync(User user)
@@ -95,11 +93,21 @@ public class UserService : IService<User>
         var userDto = await _repository.GetByPhoneNumberAsync(phoneNumber);
         return _mapper.Map<User>(userDto);
     }
-
-    public string SendSms(string phoneNumber)
+    
+    public async Task<List<string>> GetExistingUsersByPhoneNumbersBatch(List<string> phoneNumbers)
     {
-        string code = _smsService.SendSms(phoneNumber);
-        return code;
+        var existingUsers = new List<string>();
+
+        foreach (var phoneNumber in phoneNumbers)
+        {
+            User? userDto = await GetByPhoneNumberAsync(phoneNumber);
+            if (userDto != null)
+            {
+                existingUsers.Add(phoneNumber);
+            }
+        }
+
+        return existingUsers;
     }
     
 }

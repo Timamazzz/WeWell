@@ -292,22 +292,12 @@ namespace WeWell.Controllers
         [Authorize]
         [ProducesResponseType(typeof(List<string>), 200)]
         [ProducesResponseType(typeof(string), 500)]
-        [SwaggerOperation("Get existing users by phone numbers in batch")]
+        [SwaggerOperation("Get existing users by phone numbers")]
         public async Task<ActionResult<List<string>>> GetExistingUsersByPhoneNumbersBatch(List<string> phoneNumbers)
         {
             try
             {
-                var existingUsers = new List<string>();
-
-                foreach (var phoneNumber in phoneNumbers)
-                {
-                    User? userDto = await _userService.GetByPhoneNumberAsync(phoneNumber);
-                    if (userDto != null)
-                    {
-                        existingUsers.Add(phoneNumber);
-                    }
-                }
-
+                var existingUsers = await _userService.GetExistingUsersByPhoneNumbersBatch(phoneNumbers);
                 return Ok(existingUsers);
             }
             catch (Exception ex)
@@ -316,25 +306,6 @@ namespace WeWell.Controllers
             }
         }
 
-        [HttpPost("phones")]
-        [Authorize]
-        [ProducesResponseType(typeof(string), 200)]
-        [ProducesResponseType(typeof(string), 500)]
-        [SwaggerOperation("Send SMS to phone number")]
-        public ActionResult<string> SendSms(Phone phone)
-        {
-            try
-            {
-                string code = _userService.SendSms(phone.PhoneNumber);
-
-                return Ok(code);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-        
         [HttpGet("check/{phoneNumber}")]
         [Authorize]
         [ProducesResponseType(typeof(bool), 200)]
