@@ -101,7 +101,7 @@ namespace WeWell.Controllers
 
                 if (userDto == null)
                 {
-                    return Unauthorized("User not found");
+                    return NotFound("User not found");
                 }
 
                 var isAuthenticated = await _userService.AuthenticateUserAsync(userDto, user.Password) != null;
@@ -281,6 +281,34 @@ namespace WeWell.Controllers
 
                 var user = _mapper.Map<UserGet>(userDto);
                 return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+        
+        [HttpPost("phones")]
+        [Authorize]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(string), 500)]
+        [SwaggerOperation("Get existing users by phone numbers in batch")]
+        public async Task<ActionResult<List<string>>> GetExistingUsersByPhoneNumbersBatch(List<string> phoneNumbers)
+        {
+            try
+            {
+                var existingUsers = new List<string>();
+
+                foreach (var phoneNumber in phoneNumbers)
+                {
+                    User? userDto = await _userService.GetByPhoneNumberAsync(phoneNumber);
+                    if (userDto != null)
+                    {
+                        existingUsers.Add(phoneNumber);
+                    }
+                }
+
+                return Ok(existingUsers);
             }
             catch (Exception ex)
             {
