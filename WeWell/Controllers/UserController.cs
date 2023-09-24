@@ -10,7 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using System.Text;
 
 namespace WeWell.Controllers
 {
@@ -21,14 +20,12 @@ namespace WeWell.Controllers
         private readonly UserService _userService;
         private readonly IMapper _mapper;
         private readonly ImageService _imageService;
-        private readonly IConfiguration _configuration;
 
-        public UserController(UserService userService, IMapper mapper, ImageService imageService, IConfiguration configuration)
+        public UserController(UserService userService, IMapper mapper, ImageService imageService)
         {
             _userService = userService;
             _mapper = mapper;
             _imageService = imageService;
-            _configuration = configuration;
         }
 
         [HttpPost]
@@ -67,17 +64,14 @@ namespace WeWell.Controllers
                 }
 
                 var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.PhoneNumber) };
-                var jwtIssuer = _configuration["JwtAuth:Issuer"];
-                var jwtKey = _configuration["JwtAuth:Key"];
-
+                
                 var jwt = new JwtSecurityToken(
-                    issuer: jwtIssuer,
-                    audience: jwtIssuer,
+                    issuer: AuthOptions.ISSUER,
+                    audience: AuthOptions.AUDIENCE,
                     claims: claims,
                     expires: DateTime.UtcNow.Add(TimeSpan.FromDays(31)),
-                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)), SecurityAlgorithms.HmacSha256)
-                );
-
+                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+                
                 var token = new JwtSecurityTokenHandler().WriteToken(jwt);
                 
                 var authenticatedUser = new
@@ -114,14 +108,15 @@ namespace WeWell.Controllers
 
                 if (isAuthenticated)
                 {
-                    var claims = new List<Claim> {new Claim(ClaimTypes.Name, user.PhoneNumber) };
+                    var claims = new List<Claim> { new Claim(ClaimTypes.Name, user.PhoneNumber) };
+                
                     var jwt = new JwtSecurityToken(
                         issuer: AuthOptions.ISSUER,
                         audience: AuthOptions.AUDIENCE,
                         claims: claims,
                         expires: DateTime.UtcNow.Add(TimeSpan.FromDays(31)),
                         signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            
+                
                     var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
                     var authenticatedUser = new
