@@ -6,10 +6,9 @@ using Swashbuckle.AspNetCore.Annotations;
 using WeWell.Models;
 using WeWell.Models.Users;
 using WeWell.Services;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using WeWell.Interfaces;
 
 namespace WeWell.Controllers
 {
@@ -20,12 +19,14 @@ namespace WeWell.Controllers
         private readonly UserService _userService;
         private readonly IMapper _mapper;
         private readonly ImageService _imageService;
+        private readonly ITokenService _tokenService;
 
-        public UserController(UserService userService, IMapper mapper, ImageService imageService)
+        public UserController(UserService userService, IMapper mapper, ImageService imageService, TokenService tokenService)
         {
             _userService = userService;
             _mapper = mapper;
             _imageService = imageService;
+            _tokenService = tokenService;
         }
 
         [HttpPost]
@@ -55,31 +56,37 @@ namespace WeWell.Controllers
         {
             try
             {
-                var userDto = _mapper.Map<Domain.DataTransferObjects.User>(user);
-                int? userId = await _userService.RegisterAsync(userDto);
-
-                if (userId != null)
+                var existingUser = await _userService.GetByPhoneNumberAsync(user.PhoneNumber);
+                if (existingUser != null)
                 {
                     return BadRequest("User with the same phone number already exists.");
                 }
+                
+                var userDto = _mapper.Map<Domain.DataTransferObjects.User>(user);
+                
+                var claims = new List<Claim>
+                {
+                    new Claim("Name", userDto.Name ?? ""),
+                    new Claim("Phone", user.PhoneNumber),
+                };
+                
+                var accessToken = _tokenService.GenerateAccessToken(claims);
+                var refreshToken = _tokenService.GenerateRefreshToken();
+                    
+                userDto.RefreshToken = refreshToken;
+                userDto.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(31);
 
-                var claims = new List<Claim> { new Claim("phone", "+7 919 174-17-90") };
-                
-                var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
-                    claims: claims,
-                    expires: DateTime.UtcNow.Add(TimeSpan.FromDays(31)),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-                
-                var token = new JwtSecurityTokenHandler().WriteToken(jwt);
-                
+                int? userId = await _userService.RegisterAsync(userDto);
+                    
+                userDto = await _userService.GetByPhoneNumberAsync(user.PhoneNumber);
+                    
                 var authenticatedUser = new
                 {
-                    Token = "Bearer " + token,
-                    User = _mapper.Map<UserGet>(userDto) 
+                    Token = accessToken,
+                    RefreshToken = refreshToken,
+                    User = _mapper.Map<UserGet>(userDto)
                 };
-
+                
                 return Ok(authenticatedUser);
             }
             catch (Exception ex)
@@ -108,20 +115,26 @@ namespace WeWell.Controllers
 
                 if (isAuthenticated)
                 {
-                    var claims = new List<Claim> { new Claim("phone", "+7 919 174-17-90") };
+                    var claims = new List<Claim>
+                    {
+                        new Claim("Name", userDto.Name ?? ""),
+                        new Claim("Phone", user.PhoneNumber),
+                    };
                 
-                    var jwt = new JwtSecurityToken(
-                        issuer: AuthOptions.ISSUER,
-                        audience: AuthOptions.AUDIENCE,
-                        claims: claims,
-                        expires: DateTime.UtcNow.Add(TimeSpan.FromDays(31)),
-                        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-                
-                    var token = new JwtSecurityTokenHandler().WriteToken(jwt);
+                    var accessToken = _tokenService.GenerateAccessToken(claims);
+                    var refreshToken = _tokenService.GenerateRefreshToken();
+                    
+                    userDto.RefreshToken = refreshToken;
+                    userDto.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(31);
 
+                    await _userService.UpdateAsync(userDto);
+                    
+                    userDto = await _userService.GetByPhoneNumberAsync(user.PhoneNumber);
+                    
                     var authenticatedUser = new
                     {
-                        Token = "Bearer " + token,
+                        Token = accessToken,
+                        RefreshToken = refreshToken,
                         User = _mapper.Map<UserGet>(userDto)
                     };
 

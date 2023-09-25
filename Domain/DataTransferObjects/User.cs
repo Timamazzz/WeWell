@@ -8,4 +8,6 @@ public class User
         public string? AvatarPath { get; set; }
         public bool? IsAllPreferences { get; set; }
         public List<Preference>? Preferences { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
     }
