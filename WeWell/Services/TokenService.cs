@@ -12,16 +12,17 @@ public class TokenService : ITokenService
     {
         var secretKey = AuthOptions.GetSymmetricSecurityKey();
         var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-        var tokeOptions = new JwtSecurityToken(
+        var tokenOptions = new JwtSecurityToken(
             issuer: AuthOptions.ISSUER,
             audience: AuthOptions.AUDIENCE,
             claims: claims,
-            expires: DateTime.UtcNow.AddMilliseconds(1),
+            expires: DateTime.UtcNow.AddSeconds(20),
             signingCredentials: signinCredentials
         );
-        var tokenString = new JwtSecurityTokenHandler().WriteToken(tokeOptions);
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         return tokenString;
     }
+    
     public string GenerateRefreshToken()
     {
         var randomNumber = new byte[32];
@@ -31,6 +32,7 @@ public class TokenService : ITokenService
             return Convert.ToBase64String(randomNumber);
         }
     }
+    
     public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
     {
         var tokenValidationParameters = new TokenValidationParameters
@@ -39,7 +41,8 @@ public class TokenService : ITokenService
             ValidateIssuer = false,
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
-            ValidateLifetime = true
+            ValidateLifetime = true,
+            LifetimeValidator = LifetimeValidator,
         };
         var tokenHandler = new JwtSecurityTokenHandler();
         SecurityToken securityToken;
@@ -48,5 +51,14 @@ public class TokenService : ITokenService
         if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             throw new SecurityTokenException("Invalid token");
         return principal;
+    }
+    
+    private bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
+    {
+        if (expires != null)
+        {
+            return expires > DateTime.UtcNow;
+        }
+        return false;
     }
 }

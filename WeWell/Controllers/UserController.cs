@@ -125,7 +125,7 @@ namespace WeWell.Controllers
                     var refreshToken = _tokenService.GenerateRefreshToken();
                     
                     userDto.RefreshToken = refreshToken;
-                    userDto.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(3);
+                    userDto.RefreshTokenExpiryTime = DateTime.UtcNow.AddSeconds(15);
 
                     await _userService.UpdateAsync(userDto);
                     
