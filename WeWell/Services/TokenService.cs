@@ -16,7 +16,7 @@ public class TokenService : ITokenService
             issuer: AuthOptions.ISSUER,
             audience: AuthOptions.AUDIENCE,
             claims: claims,
-            expires: DateTime.UtcNow.AddSeconds(20),
+            expires: DateTime.UtcNow.Add(TimeSpan.FromSeconds(20)),
             signingCredentials: signinCredentials
         );
         var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
@@ -42,7 +42,6 @@ public class TokenService : ITokenService
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
             ValidateLifetime = true,
-            LifetimeValidator = LifetimeValidator,
         };
         var tokenHandler = new JwtSecurityTokenHandler();
         SecurityToken securityToken;
@@ -51,14 +50,5 @@ public class TokenService : ITokenService
         if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             throw new SecurityTokenException("Invalid token");
         return principal;
-    }
-    
-    private bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken token, TokenValidationParameters @params)
-    {
-        if (expires != null)
-        {
-            return expires > DateTime.UtcNow;
-        }
-        return false;
     }
 }
