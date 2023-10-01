@@ -28,5 +28,7 @@ public class AppMappingDtoToPresentationModelsProfile : Profile
         CreateMap<Domain.DataTransferObjects.Meeting, Models.Meetings.MeetingCreate>().ReverseMap();
         CreateMap<Domain.DataTransferObjects.Meeting, Models.Meetings.MeetingGet>().ReverseMap();
         CreateMap<Domain.DataTransferObjects.Meeting, Models.Meetings.MeetingUpdate>().ReverseMap();
+        CreateMap<Domain.DataTransferObjects.Player, Models.Player>().ReverseMap();
+
     }
 }

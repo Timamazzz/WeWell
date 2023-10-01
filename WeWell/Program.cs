@@ -53,6 +53,7 @@ builder.Services.AddScoped<PlaceService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<PlayerService>();
 builder.Services.AddScoped<Random>();
 
 //Repositories
@@ -61,6 +62,7 @@ builder.Services.AddScoped<MeetingRepository>();
 builder.Services.AddScoped<MeetingTypeRepository>();
 builder.Services.AddScoped<PlaceRepository>();
 builder.Services.AddScoped<PreferenceRepository>();
+builder.Services.AddScoped<PlayerRepository>();
 
 // Add services to the container.
 builder.Services.AddControllers();

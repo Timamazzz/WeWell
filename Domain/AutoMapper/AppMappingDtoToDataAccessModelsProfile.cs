@@ -11,5 +11,6 @@ public class AppMappingDtoToDataAccessModelsProfile : Profile
         CreateMap<User, DataTransferObjects.User>().ReverseMap();
         CreateMap<Place, DataTransferObjects.Place>().ReverseMap();
         CreateMap<Meeting, DataTransferObjects.Meeting>().ReverseMap();
+        CreateMap<Player, DataTransferObjects.Player>().ReverseMap();
     }
 }

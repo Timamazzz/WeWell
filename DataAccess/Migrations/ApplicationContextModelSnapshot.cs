@@ -158,6 +158,25 @@ namespace DataAccess.Migrations
                     b.ToTable("Places");
                 });
 
+            modelBuilder.Entity("DataAccess.Models.Player", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int?>("Id"));
+
+                    b.Property<TimeSpan?>("Time")
+                        .HasColumnType("interval");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Players");
+                });
+
             modelBuilder.Entity("DataAccess.Models.Preference", b =>
                 {
                     b.Property<int>("Id")
