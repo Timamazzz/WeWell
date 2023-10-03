@@ -49,7 +49,7 @@ public class TokenController : ControllerBase
         var newRefreshToken = _tokenService.GenerateRefreshToken();
 
         user.RefreshToken = newRefreshToken;
-        user.RefreshTokenExpiryTime =  DateTime.UtcNow.AddMinutes(2);
+        user.RefreshTokenExpiryTime =  DateTime.UtcNow.AddDays(31);
         await _userService.UpdateAsync(user);
 
         return Ok(new

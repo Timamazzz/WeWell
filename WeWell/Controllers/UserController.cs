@@ -125,7 +125,7 @@ namespace WeWell.Controllers
                     var refreshToken = _tokenService.GenerateRefreshToken();
                     
                     userDto.RefreshToken = refreshToken;
-                    userDto.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(2);
+                    userDto.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(31);
 
                     await _userService.UpdateAsync(userDto);
                     
@@ -243,6 +243,7 @@ namespace WeWell.Controllers
 
         [HttpPut("avatars")]
         [Authorize]
+        [DisableRequestSizeLimit]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(string), 500)]
         [SwaggerOperation("Update Avatar User")]
