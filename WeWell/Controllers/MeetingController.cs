@@ -29,11 +29,16 @@ public class MeetingsController : ControllerBase
     [SwaggerOperation("Create a new meeting")]
     public async Task<ActionResult<int?>> CreateMeeting(MeetingCreate meeting)
     {
+        MeetingGet meetingGet = null;
+
         try
         {
             var meetingDto = _mapper.Map<Domain.DataTransferObjects.Meeting>(meeting);
-            await _service.CreateAsync(meetingDto);
-            return Ok();
+            var meetingId = await _service.CreateAsync(meetingDto);
+            if (meetingId != null)
+                meetingGet = _mapper.Map<MeetingGet>(await _service.GetByIdAsync(meetingId.Value));
+
+            return Ok(meetingGet);
         }
         catch (Exception ex)
         {
