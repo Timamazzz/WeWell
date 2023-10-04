@@ -1,4 +1,5 @@
 ﻿using DataAccess;
+using DataAccess.Enums;
 
 public class MeetingArchiveService : IHostedService, IDisposable
 {
@@ -30,7 +31,11 @@ public class MeetingArchiveService : IHostedService, IDisposable
             var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
 
             var activeMeetings = dbContext.Meetings
-                .Where(m => !m.IsArchive.HasValue || (m.IsArchive.HasValue && !m.IsArchive.Value) && m.DateTimeEnd <= DateTime.UtcNow)
+                .Where(m =>
+                        (!m.IsArchive.HasValue || (m.IsArchive.HasValue && !m.IsArchive.Value)) &&
+                        (m.DateTimeEnd <= DateTime.UtcNow) &&                                
+                        (m.Status != MeetingStatus.Cancelled.ToString())                     
+                )
                 .ToList();
 
             foreach (var meeting in activeMeetings)
@@ -40,6 +45,7 @@ public class MeetingArchiveService : IHostedService, IDisposable
             dbContext.SaveChanges();
         }
     }
+
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
