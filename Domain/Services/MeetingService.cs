@@ -147,4 +147,9 @@ public class MeetingService : IService<Meeting>
             return null;
         }
     }
+    public async Task DeleteAllMeetingsAsync()
+    {
+        await _repository.DeleteAllAsync();
+    }
+
 }

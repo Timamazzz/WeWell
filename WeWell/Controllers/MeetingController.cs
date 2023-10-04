@@ -103,4 +103,24 @@ public class MeetingsController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
+    
+    [HttpDelete]
+    [Authorize]
+    [ProducesResponseType(typeof(string), 200)]
+    [ProducesResponseType(typeof(string), 400)]
+    [ProducesResponseType(typeof(string), 500)]
+    [SwaggerOperation("Delete all meetings")]
+    public async Task<ActionResult<string>> DeleteMeetings()
+    {
+        try
+        {
+            await _service.DeleteAllMeetingsAsync();
+
+            return Ok("Delete all meetings successfully");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
+    }
 }

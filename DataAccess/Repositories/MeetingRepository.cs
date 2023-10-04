@@ -77,4 +77,16 @@ public class MeetingRepository : IRepository<Meeting>
             await _context.SaveChangesAsync();
         }
     }
+    
+    public async Task DeleteAllAsync()
+    {
+        var allMeetings = await _context.Meetings.ToListAsync();
+
+        if (allMeetings != null && allMeetings.Any())
+        {
+            _context.RemoveRange(allMeetings);
+            await _context.SaveChangesAsync();
+        }
+    }
+
 }
