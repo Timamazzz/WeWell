@@ -16,7 +16,7 @@ public class MeetingArchiveService : IHostedService, IDisposable
     {
         _logger.LogInformation("Meeting Archive Service is starting.");
 
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(30)); // Периодичность выполнения
+        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(5)); 
 
         return Task.CompletedTask;
     }
@@ -27,9 +27,8 @@ public class MeetingArchiveService : IHostedService, IDisposable
 
         using (var scope = _services.CreateScope())
         {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>(); // Замените на ваш DbContext
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
 
-            // Получите все активные встречи, где is_archive = false
             var activeMeetings = dbContext.Meetings
                 .Where(m => !m.IsArchive.HasValue || (m.IsArchive.HasValue && !m.IsArchive.Value) && m.DateTimeEnd <= DateTime.UtcNow)
                 .ToList();
