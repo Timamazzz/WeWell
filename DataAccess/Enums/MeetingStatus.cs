@@ -1,4 +1,4 @@
-﻿namespace Domain.DataTransferObjects;
+﻿namespace DataAccess.Enums;
 
 public enum MeetingStatus
 {

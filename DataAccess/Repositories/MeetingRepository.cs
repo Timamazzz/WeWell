@@ -1,4 +1,5 @@
-﻿using DataAccess.Interfaces;
+﻿using DataAccess.Enums;
+using DataAccess.Interfaces;
 using DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -47,6 +48,12 @@ public class MeetingRepository : IRepository<Meeting>
             .Include(m => m.Guest)
             .Include(m => m.Place)
             .Include(m => m.Type)
+            .Where(meeting =>
+                (meeting.Status != MeetingStatus.Cancelled.ToString() || 
+                 (meeting.Status == MeetingStatus.Cancelled.ToString() && 
+                  (meeting.IsShowForCreator.Value || meeting.Creator.Id != userId) &&
+                  (meeting.IsShowForGuest.Value || meeting.Guest.Id != userId)))
+            )
             .OrderBy(meeting => meeting.Id)
             .ToListAsync();
 

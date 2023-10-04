@@ -28,7 +28,7 @@ public class MeetingStatusController : ControllerBase
     {
         try
         {
-            var meetingStatuses = Enum.GetNames(typeof(Domain.DataTransferObjects.MeetingStatus))
+            var meetingStatuses = Enum.GetNames(typeof(DataAccess.Enums.MeetingStatus))
                 .Select(status => status.ToString())
                 .ToList();
             return Ok(meetingStatuses);

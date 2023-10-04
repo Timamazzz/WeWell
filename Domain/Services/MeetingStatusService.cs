@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using DataAccess.Repositories;
-using Domain.DataTransferObjects;
-using Domain.Interfaces;
+using DataAccess.Enums;
 
 namespace Domain.Services
 {
@@ -15,7 +13,6 @@ namespace Domain.Services
         }
         public async Task<List<MeetingStatus>?> GetAllAsync()
         {
-            
             return Enum.GetValues(typeof(MeetingStatus)).Cast<MeetingStatus>().ToList();
         }
     }

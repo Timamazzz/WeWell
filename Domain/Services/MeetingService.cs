@@ -46,7 +46,7 @@ public class MeetingService : IService<Meeting>
         meeting.IsShowForCreator = true;
         meeting.IsShowForGuest = true;
         meeting.IsArchive = false;
-        meeting.Status = MeetingStatus.Invited.ToString();
+        meeting.Status = DataAccess.Enums.MeetingStatus.Invited.ToString();
         
         DataAccess.Models.Meeting entity = _mapper.Map<DataAccess.Models.Meeting>(meeting);
 
@@ -92,7 +92,7 @@ public class MeetingService : IService<Meeting>
         entity.IsShowForCreator = meeting.IsShowForCreator;
         entity.IsShowForGuest = meeting.IsShowForGuest;
         
-        if (Enum.TryParse<MeetingStatus>(meeting.Status, out var parsedStatus))
+        if (Enum.TryParse<DataAccess.Enums.MeetingStatus>(meeting.Status, out var parsedStatus))
         {
             entity.Status = parsedStatus.ToString();
         }
